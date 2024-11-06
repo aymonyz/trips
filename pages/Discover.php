@@ -66,8 +66,8 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
 <div class="container-xxl py-5">
     <div class="container">
         <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-            <h6 class="section-title bg-white text-center text-primary px-3">Places</h6>
-            <h1 class="mb-5">Explore Our Places</h1>
+            <h6 class="section-title bg-white text-center text-primary px-3">اماكن</h6>
+            <h1 class="mb-5">اكتشف أماكننا</h1>
         </div>
         
         <!-- Search Form -->
@@ -76,7 +76,7 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
                 <div class="input-group">
                     <input type="text" class="form-control" name="city" placeholder="Search by city" value="<?php echo htmlspecialchars($_GET['city'] ?? ''); ?>">
                     <input type="hidden" name="page" value="Discover"> <!-- Ensure the page parameter is included -->
-                    <button class="btn btn-primary" type="submit">Search</button>
+                    <button class="btn btn-primary" type="submit">بحث</button>
                 </div>
             </form>
         </div>

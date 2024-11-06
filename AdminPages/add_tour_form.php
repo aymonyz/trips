@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle file upload only if an image is provided
     $imagePath = null;
     if (!empty($_FILES['tourImage']['name'])) {
-        $imagePath = "uploads/" . basename($_FILES['tourImage']['name']);
+        $imagePath = "../uploads/" . basename($_FILES['tourImage']['name']);
         if (!move_uploaded_file($_FILES['tourImage']['tmp_name'], $imagePath)) {
             echo "Done!!";
             exit();

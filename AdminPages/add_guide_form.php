@@ -71,8 +71,9 @@ if (isset($_POST['updateGuide'])) {
     // Check if a new image is uploaded
     if (!empty($_FILES['guideImage']['name'])) {
         $guideImage = $_FILES['guideImage']['name'];
-        $target_file = $target_dir . basename($guideImage);
-        move_uploaded_file($_FILES['guideImage']['tmp_name'], $target_file);
+        $target_file = "uploads/" . basename($guideImage);
+        $target_file1 = "../uploads/" . basename($guideImage);
+        move_uploaded_file($_FILES['guideImage']['tmp_name'], $target_file1);
     } else {
         $guideImage = $_POST['existingImage'];
     }
@@ -83,7 +84,7 @@ if (isset($_POST['updateGuide'])) {
             SET name = ?, languages = ?, experience = ?, rating = ?, imageURL = ?, facebook = ?, twitter = ?, instagram = ? 
             WHERE guideId = ?
         ");
-        $updateQuery->execute([$name, $languages, $experience, $rating, $guideImage, $facebook, $twitter, $instagram, $guideId]);
+        $updateQuery->execute([$name, $languages, $experience, $rating, $target_file, $facebook, $twitter, $instagram, $guideId]);
         echo "Guide updated successfully!";
     } catch (PDOException $e) {
         echo "Error updating guide: " . $e->getMessage();

@@ -36,17 +36,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 
 <div class="container mt-5">
-    <h2>Login</h2>
+    <h2>تسجيل الدخول</h2>
     <form method="POST" action="index.php?page=login">
         <div class="mb-3">
-            <label for="email" class="form-label">Email Address</label>
+            <label for="email" class="form-label">البريد الإلكتروني</label>
             <input type="email" class="form-control" id="email" name="emailAddress" required>
         </div>
         <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+            <label for="password" class="form-label">كلمة المرور</label>
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
     </form>
-    <p>Don't have an account? <a href="index.php?page=register">Register here</a></p>
+    <p>ليس لديك حساب؟ <a href="index.php?page=register">سجل هنا</a></p>
 </div>

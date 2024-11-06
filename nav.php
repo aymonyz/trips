@@ -13,49 +13,50 @@ if (isset($_SESSION['role'])) {
 if ($page == 'home') {
     $heroClass = 'hero-header';
     $heroBgStyle = "background-image: url('img/about-bg.jpg'); background-size: cover; background-position: center;";
-    $heroTitle = 'Enjoy Your Vacation With Us';
-    $heroText = 'Tempor erat elitr rebum at clita diam amet diam et eos erat ipsum lorem sit';
+    $heroTitle = 'استمتع بإجازتك معنا';
+    $heroText = 'نوفر لكم أفضل تجربة سياحية مع الراحة والجودة في كل خطوة';
 } else {
     $heroClass = 'hero-header-other';
-    // Set background images and content for each page
+    // تحديد خلفيات وصفحات مخصصة لكل صفحة
     switch ($page) {
         case 'about':
             $heroBgStyle = "background-image: url('img/about-bg.jpg'); background-size: cover; background-position: center;";
-            $heroTitle = 'Learn More About Us';
-            $heroText = 'Discover the story behind our company and our mission.';
+            $heroTitle = 'تعرف علينا أكثر';
+            $heroText = 'اكتشف القصة وراء شركتنا ورسالتنا.';
             break;
         case 'packages':
             $heroBgStyle = "background-image: url('img/packages-bg.jpg'); background-size: cover; background-position: center;";
-            $heroTitle = 'Explore Our Tour Packages';
-            $heroText = 'Find the perfect tour package for your next adventure.';
+            $heroTitle = 'استعرض باقاتنا السياحية';
+            $heroText = 'اختر الباقة السياحية المثالية لمغامرتك القادمة.';
             break;
         case 'tourDetails':
             $heroBgStyle = "background-image: url('img/packages-bg.jpg'); background-size: cover; background-position: center;";
-            $heroTitle = 'Explore Our Tour Packages';
-            $heroText = 'Find the perfect tour package for your next adventure.';
+            $heroTitle = 'استعرض باقاتنا السياحية';
+            $heroText = 'اختر الباقة السياحية المثالية لمغامرتك القادمة.';
             break;
         case 'team':
             $heroBgStyle = "background-image: url('img/team-bg.jpg'); background-size: cover; background-position: center;";
-            $heroTitle = 'Meet Our Travel Guides';
-            $heroText = 'Our expert guides will make your journey unforgettable.';
+            $heroTitle = 'تعرف على مرشدينا السياحيين';
+            $heroText = 'مرشدونا الخبراء سيجعلون رحلتك لا تُنسى.';
             break;
         case 'contact':
             $heroBgStyle = "background-image: url('img/contact-bg.jpg'); background-size: cover; background-position: center;";
-            $heroTitle = 'Get in Touch with Us';
-            $heroText = 'We’re here to help with any questions or inquiries.';
+            $heroTitle = 'تواصل معنا';
+            $heroText = 'نحن هنا للمساعدة في أي استفسارات أو أسئلة.';
             break;
         case 'Discover':
             $heroBgStyle = "background-image: url('img/packages-bg.jpg'); background-size: cover; background-position: center;";
-            $heroTitle = 'Explore Our Tour Packages';
-            $heroText = 'Find the perfect tour package for your next adventure.';
+            $heroTitle = 'استعرض باقاتنا السياحية';
+            $heroText = 'اختر الباقة السياحية المثالية لمغامرتك القادمة.';
             break;
         default:
             $heroBgStyle = "background-image: url('img/bg-hero.jpg'); background-size: cover; background-position: center;";
-            $heroTitle = 'Welcome to Our Travel Agency';
-            $heroText = 'Explore the world with us at your side.';
+            $heroTitle = 'مرحباً بكم في وكالتنا السياحية';
+            $heroText = 'اكتشف العالم معنا في كل خطوة.';
             break;
     }
 }
+
 ?>
 
 <!-- Navbar & Hero Start -->
@@ -75,20 +76,21 @@ if ($page == 'home') {
                 <?php if ($role == 'guide'): ?>
                     <a href="guide.php?form=addPlace" class="nav-item nav-link">Suggest Place</a>
                 <?php endif; ?>
-            <a href="index.php?page=home" class="nav-item nav-link <?= $page == 'home' ? 'active' : '' ?>">Home</a>
-            <a href="index.php?page=Discover" class="nav-item nav-link <?= $page == 'Discover' ? 'active' : '' ?>">Discover</a>
-            <a href="index.php?page=about" class="nav-item nav-link <?= $page == 'about' ? 'active' : '' ?>">About</a>
-            <a href="index.php?page=packages" class="nav-item nav-link <?= $page == 'packages' ? 'active' : '' ?>">Tours</a>
-            <a href="index.php?page=team" class="nav-item nav-link <?= $page == 'team' ? 'active' : '' ?>">Travel Guides</a>
-            <a href="index.php?page=contact" class="nav-item nav-link <?= $page == 'contact' ? 'active' : '' ?>">Contact</a>
+            <a href="index.php?page=home" class="nav-item nav-link <?= $page == 'home' ? 'active' : '' ?>">الرئيسة</a>
+            <a href="index.php?page=Discover" class="nav-item nav-link <?= $page == 'Discover' ? 'active' : '' ?>">استكشف</a>
+            <a href="index.php?page=about" class="nav-item nav-link <?= $page == 'about' ? 'active' : '' ?>">من نحن </a>
+            <a href="index.php?page=packages" class="nav-item nav-link <?= $page == 'packages' ? 'active' : '' ?>">الرحلات </a>
+            <a href="index.php?page=team" class="nav-item nav-link <?= $page == 'team' ? 'active' : '' ?>">المرشدين </a>
+            <a href="index.php?page=contact" class="nav-item nav-link <?= $page == 'contact' ? 'active' : '' ?>">تواصل معانا </a>
         </div>
         <?php if (isset($_SESSION['userId'])): ?>
             <!-- Show Profile and Logout if logged in -->
-            <a href="index.php?page=profile" class="btn btn-primary rounded-pill py-2 px-4">Profile</a>
-            <a href="index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">Logout</a>
+            <a href="index.php?page=profile" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
+            <a href="index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
         <?php else: ?>
+            <a href="index.php?page=login" class="btn btn-primary rounded-pill py-2 px-4" style="margin:5px">تسجيل دخول </a>
             <!-- Show Register if not logged in -->
-            <a href="index.php?page=register" class="btn btn-primary rounded-pill py-2 px-4">Register</a>
+            <a href="index.php?page=register" class="btn btn-primary rounded-pill py-2 px-4">انشاء حساب</a>
         <?php endif; ?>
     </div>
 </nav>
