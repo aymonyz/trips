@@ -31,7 +31,7 @@ while ($row = $countryQuery->fetch(PDO::FETCH_ASSOC)) {
 <div class="container-fluid position-relative p-0" style="margin-top:90px">
     <div class="container">
         <h2>أريد أن أصبح المرشد</h2>
-        <form action="save_additional_info.php" method="POST">
+        <form action="save_additional_info.php" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="license">رقم الرخصة / السجل التجاري</label>
                 <input type="text" id="license" name="license" required>
@@ -79,6 +79,37 @@ while ($row = $countryQuery->fetch(PDO::FETCH_ASSOC)) {
             <div class="form-group">
                 <label for="about">نبذة عني</label>
                 <textarea id="about" name="about" rows="3"></textarea>
+            </div>
+
+            <!-- الحقول الإضافية -->
+            <div class="form-group">
+                <label for="facebook">رابط Facebook</label>
+                <input type="url" id="facebook" name="facebook" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="twitter">رابط Twitter</label>
+                <input type="url" id="twitter" name="twitter" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="instagram">رابط Instagram</label>
+                <input type="url" id="instagram" name="instagram" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="imageURL">تحميل صورة</label>
+                <input type="file" id="imageURL" name="imageURL" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="experience">الخبرة (بالسنوات)</label>
+                <input type="number" id="experience" name="experience" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="experience"> رقم الجوال</label>
+                <input type="number" id="phone" name="phone" class="form-control">
             </div>
 
             <div class="form-group">

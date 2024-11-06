@@ -1,6 +1,4 @@
 <?php
-
-// Get the current page from the URL, default to 'home'
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 if (isset($_SESSION['role'])) {
@@ -83,14 +81,19 @@ if ($page == 'home') {
             <a href="index.php?page=contact" class="nav-item nav-link <?= $page == 'contact' ? 'active' : '' ?>">تواصل معانا </a>
         </div>
         <?php if (isset($_SESSION['userId'])): ?>
-            <!-- Show Profile and Logout if logged in -->
-            <a href="index.php?page=profile" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
-            <a href="index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
-        <?php else: ?>
-            <a href="index.php?page=login" class="btn btn-primary rounded-pill py-2 px-4" style="margin:5px">تسجيل دخول </a>
-            <!-- Show Register if not logged in -->
-            <a href="index.php?page=register" class="btn btn-primary rounded-pill py-2 px-4">انشاء حساب</a>
-        <?php endif; ?>
+    <!-- Show Profile and Logout if logged in -->
+    <?php if ($_SESSION['role'] == 'guide'): ?>
+        <a href="GuidePages/profile.php" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
+    <?php elseif ($_SESSION['role'] == 'user'): ?>
+        <a href="index.php?page=profile" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
+    <?php endif; ?>
+    
+    <a href="index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
+<?php else: ?>
+    <!-- Show Login and Register if not logged in -->
+    <a href="index.php?page=login" class="btn btn-primary rounded-pill py-2 px-4" style="margin:5px">تسجيل دخول</a>
+    <a href="index.php?page=register" class="btn btn-primary rounded-pill py-2 px-4">إنشاء حساب</a>
+<?php endif; ?>
     </div>
 </nav>
 
