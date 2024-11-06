@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // Database connection
+include '../db.php'; // Database connection
 
 // Fetch all guides for the dropdown
 $guidesStmt = $pdo->query("SELECT guideId, name FROM TourGuide");
@@ -28,8 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Handle file upload only if an image is provided
     $imagePath = null;
+   
+    
     if (!empty($_FILES['tourImage']['name'])) {
-        $imagePath = "uploads/" . basename($_FILES['tourImage']['name']);
+        $imagePath = "../uploads/" . basename($_FILES['tourImage']['name']);
         if (!move_uploaded_file($_FILES['tourImage']['tmp_name'], $imagePath)) {
             echo "Done!!";
             exit();
@@ -59,13 +61,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $pdo->commit();
         echo "Tour and associated places added successfully!";
+        header("Location: add_tour_form.php"); // تعديل التوجيه ليشمل Location:
+            exit();
+        
     } catch (PDOException $e) {
         $pdo->rollBack();
         echo "Error adding the tour: " . htmlspecialchars($e->getMessage());
     }
 
     // Redirect to avoid re-triggering the insertion on page refresh
-    header("Location: admin.php?form=addTour");
+    header("add_tour_form.php");
     exit();
 }
 ?>
