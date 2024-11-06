@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
     </form>
+<<<<<<< HEAD
 
     <?php if ($error): ?>
         <p class="text-danger mt-3"><?= htmlspecialchars($error) ?></p>
@@ -71,6 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <p>ليس لديك حساب؟ <a href="index.php?page=register">سجل هنا</a></p>
     <p>هل تريد أن تصبح مرشدًا؟ <a href="GuidePages/register.php" class="btn btn-secondary mt-2">تسجيل كمرشد</a></p>
+=======
+    <p>ليس لديك حساب؟ <a href="index.php?page=register">سجل هنا</a></p>
+>>>>>>> 5c7cbe05bc0ffbc61da558e6af3a1aba950991ec
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

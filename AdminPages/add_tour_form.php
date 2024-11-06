@@ -1,6 +1,6 @@
 <?php
 include '../db.php';  // Database connection
-
+include 'index.php'; 
 // Fetch all guides for the dropdown
 $guidesStmt = $pdo->query("SELECT guideId, name FROM TourGuide");
 $guides = $guidesStmt->fetchAll(PDO::FETCH_ASSOC);

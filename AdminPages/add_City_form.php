@@ -1,8 +1,50 @@
 <?php
-include '../db.php'; // Include your database connection
+include '../db.php'; // تضمين الاتصال بقاعدة البيانات
+include 'index.php'; 
+
+if (isset($_POST['addCity'])) {
+  $name = $_POST['Name'];
+
+  // التحقق من تحميل الصورة
+  if (isset($_FILES['cityImage']) && $_FILES['cityImage']['error'] == 0) {
+      // تحديد مسار الحفظ
+      $imageName = basename($_FILES['cityImage']['name']);
+      $imagePath = '../uploads/' . $imageName;
 
 
-// Retrieve all places
+      // التحقق من نقل الملف
+      if (move_uploaded_file($_FILES['cityImage']['tmp_name'], $imagePath)) {
+        $stmt = $pdo->prepare("INSERT INTO cities (Name, ImageURL) VALUES (:name, :imagePath)");
+        $stmt->execute(['name' => $name, 'imagePath' => $imagePath]);
+        echo "<div class='alert alert-success'>تم رفع الصورة بنجاح.</div>";
+    } else {
+        echo "<div class='alert alert-danger'>حدث خطأ أثناء نقل الصورة إلى مجلد 'uploads'.</div>";
+        echo "<pre>";
+        print_r(error_get_last());
+        echo "</pre>";
+    }
+    
+  } else {
+      // التحقق من نوع الخطأ في حالة فشل الرفع
+      switch ($_FILES['cityImage']['error']) {
+          case UPLOAD_ERR_INI_SIZE:
+          case UPLOAD_ERR_FORM_SIZE:
+              echo "<div class='alert alert-warning'>حجم الملف يتجاوز الحد الأقصى المسموح به.</div>";
+              break;
+          case UPLOAD_ERR_PARTIAL:
+              echo "<div class='alert alert-warning'>تم تحميل جزء فقط من الملف.</div>";
+              break;
+          case UPLOAD_ERR_NO_FILE:
+              echo "<div class='alert alert-warning'>لم يتم اختيار ملف للتحميل.</div>";
+              break;
+          default:
+              echo "<div class='alert alert-danger'>حدث خطأ غير متوقع أثناء رفع الملف.</div>";
+              break;
+      }
+  }
+}
+
+// استرجاع جميع المدن لعرضها في الجدول
 $cityQuery = $pdo->query("SELECT * FROM cities");
 $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -39,7 +81,7 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
         <tr>
           <th>ID</th>
           <th>Name</th>
-          
+          <th>Image</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -48,10 +90,10 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
           <tr>
             <td><?= htmlspecialchars($city['CityId']) ?></td>
             <td><?= htmlspecialchars($city['Name']) ?></td>
-            
+            <td><img src="<?= htmlspecialchars($city['ImageURL']) ?>" alt="City Image" width="100"></td>
             <td>
               <a href="?removeCity=<?= htmlspecialchars($city['CityId']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this City?');">Delete</a>
-              </td>
+            </td>
           </tr>
         <?php endforeach; ?>
       </tbody>

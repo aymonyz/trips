@@ -19,9 +19,9 @@ if (!$user) {
 ?>
 
 <div class="container mt-5">
-    <h2>Profile</h2>
-    <p><strong>Name:</strong> <?= htmlspecialchars($user['name']); ?></p>
-    <p><strong>Email:</strong> <?= htmlspecialchars($user['emailAddress']); ?></p>
-    <p><strong>Role:</strong> <?= htmlspecialchars($user['role']); ?></p>
-    <a href="index.php?page=home" class="btn btn-primary">Back to Home</a>
+    <h2>الملف الشخصي</h2>
+    <p><strong>الاسم:</strong> <?= htmlspecialchars($user['name']); ?></p>
+    <p><strong>البريد الإلكتروني:</strong> <?= htmlspecialchars($user['emailAddress']); ?></p>
+    <p><strong>الدور:</strong> <?= htmlspecialchars($user['role']); ?></p>
+    <a href="index.php?page=home" class="btn btn-primary">العودة إلى الصفحة الرئيسية</a>
 </div>

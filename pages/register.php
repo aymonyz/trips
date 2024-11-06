@@ -19,23 +19,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
 }
 ?>
-
 <div class="container mt-5">
-    <h2>Register</h2>
+    <h2>تسجيل حساب جديد</h2>
     <form method="POST" action="index.php?page=register">
         <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
+            <label for="name" class="form-label">الاسم</label>
             <input type="text" class="form-control" id="name" name="name" required>
         </div>
         <div class="mb-3">
-            <label for="email" class="form-label">Email Address</label>
+            <label for="email" class="form-label">البريد الإلكتروني</label>
             <input type="email" class="form-control" id="email" name="emailAddress" required>
         </div>
         <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+            <label for="password" class="form-label">كلمة المرور</label>
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">تسجيل</button>
     </form>
-    <p>Already have an account? <a href="index.php?page=login">Login here</a></p>
+    <p>هل لديك حساب بالفعل؟ <a href="index.php?page=login">تسجيل الدخول هنا</a></p>
 </div>
+
