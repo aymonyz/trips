@@ -1,6 +1,6 @@
 <?php
 include '../db.php'; // Include your database connection
-
+include 'admin.php'; 
 // Handle suggestion deletion
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['UpdateSuggestion'])) {
     $suggestionId = $_POST['PlaceId']; // Change variable name to be more accurate

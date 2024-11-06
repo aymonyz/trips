@@ -1,6 +1,6 @@
 <?php
 include '../db.php'; // Include your database connection
-
+include 'index.php'; 
 // // Retrieve all places
 // $placeQuery = $pdo->query("SELECT * FROM place");
 // $places = $placeQuery->fetchAll(PDO::FETCH_ASSOC);

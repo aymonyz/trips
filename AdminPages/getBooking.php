@@ -1,6 +1,6 @@
 <?php
 include '../db.php'; 
-
+include 'index.php'; 
 
 // Fetch all bookings
 $bookingsQuery = $pdo->prepare("SELECT b.*, u.name AS userName, t.title AS tourTitle 

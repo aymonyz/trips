@@ -1,6 +1,6 @@
 <?php
 include '../db.php'; // Include your database connection
-
+include 'index.php'; 
 // Handle message deletion
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteMessage'])) {
     $messageId = $_POST['messageId'];

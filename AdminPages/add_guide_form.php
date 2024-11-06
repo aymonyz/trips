@@ -1,6 +1,6 @@
 <?php
 include '../db.php';  // Include your database connection
-
+include 'index.php'; 
 // Handle guide addition
 if (isset($_POST['addGuide'])) {
     $name = $_POST['name'];
