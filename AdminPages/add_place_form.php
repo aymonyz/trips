@@ -35,6 +35,7 @@ if (isset($_POST['addPlace'])) {
     if (!empty($_FILES['placeImages']['name'][0])) {
         foreach ($_FILES['placeImages']['tmp_name'] as $index => $tmpName) {
             $imageName = basename($_FILES['placeImages']['name'][$index]);
+            $path='uploads'.$imageName;
             $imagePath = '../uploads/' . $imageName;
 
             // نقل الملف إلى مجلد التحميلات
@@ -53,7 +54,7 @@ if (isset($_POST['addPlace'])) {
             $stmt->execute([
                 'name' => $placeName,
                 'description' => $placeDescription,
-                'imageURL' => $imagePathsString,
+                'imageURL' => $path,
                 'cityId' => $cityId
             ]);
             echo "<div class='alert alert-success'>تمت إضافة المكان بنجاح.</div>";

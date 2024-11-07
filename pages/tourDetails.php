@@ -25,7 +25,7 @@ $placesStmt = $pdo->prepare("
 $placesStmt->execute(['tourId' => $tourId]);
 $places = $placesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-define('BASE_URL', 'http://localhost/trips/uploads/'); // استبدل `localhost/trips/uploads/` بمسار الصور الصحيح
+define('BASE_URL', 'http://localhost/trips/'); // استبدل `localhost/trips/uploads/` بمسار الصور الصحيح
 ?>
 
 <!DOCTYPE html>
@@ -61,8 +61,6 @@ define('BASE_URL', 'http://localhost/trips/uploads/'); // استبدل `localhos
                     <p>لم يتم العثور على الجولة.</p>
                 <?php endif; ?>
             </div>
-     <?php  define('BASE_URL', 'http://localhost/trips/'); // تأكد أن المسار هنا هو المسار الصحيح إلى مجلد الجذر للصور
-?>
             <!-- Tour Guide Details -->
             <div class="col-lg-5">
                 <div class="tour-guide-details mb-4 text-center">
