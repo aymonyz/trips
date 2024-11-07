@@ -70,7 +70,7 @@ if (!$guide) {
             justify-content: center;
         }
         .shape a {
-            align-self: baseline;
+            align-self: end;
         }
         .style-mid {
             display: flex;
@@ -129,7 +129,7 @@ if (!$guide) {
             background-color: #6b9312;
         }
         .team-item {
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
         }
         .Search {
             width: 85%;
@@ -146,20 +146,65 @@ if (!$guide) {
             background: #6b9312;
             border-radius: 15px 0px 0px 15px;
         }
+        .ss{
+            text-align: right;
+        }
+        .containerr{
+        height: 370px;
+        }
+        .social-link {
+        
+        font-size: 20px;
+        transition: background-color 0.3s;
+        margin-bottom: 10px;
+    }
+    .social-link i{
+        padding: 5px 15px;
+        border-radius: 5px;
+        
+    }
+    .fb{
+        background-color: #3B5998;
+        border-radius: 5px;
+        text-align: center;
+    }
+    .tw{
+        background-color: #38A1F3;
+        border-radius: 5px;
+        text-align: center;
+    }
+    .in{
+        background-color: #C13584;
+        border-radius: 5px;
+        text-align: center;
+    }
+.flex-column{
+    justify-content: center;
+}
+.btnn{
+    background: #292929;
+    border-radius: 10px;
+    font-weight: 500;
+    padding: 5px 10px;
+    line-height: 1.5;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
 
 <?php include '../base_nav.php'; ?>
 
-<div class="container-xxl py-5">
-    <div class="container">
+<div class="container-xxl py-5 ">
+    <div class="containerr">
+
         <div class="row g-8">
-            <div class="col-lg-10 col-md-6 wow fadeInUp new" data-wow-delay="0.1s">
-                <div class="team-item d-flex align-items-start border style">
+            <div class="col-lg-12 col-md-6 wow fadeInUp new" data-wow-delay="0.1s">
+                <h3 class="ss">تفاصيل المرشد السياحي</h3>
+                <div class="team-item d-flex align-items-start  style">
                     <!-- Image Section -->
                     <div class="team-img mrg">
-                        <img class="img-fluid rounded-circle" src="<?php echo $guide['imageURL']; ?>" alt="Guide Image" width="96" height="96">
+                        <img class="img-fluid rounded-circle" src="<?php echo '../'.$guide['imageURL']; ?>" alt="Guide Image" width="96" height="96">
                     </div>
 
                     <!-- Guide Details -->
@@ -196,11 +241,22 @@ if (!$guide) {
                         </div>
                         <p class="mb-2 lang"><?php echo $guide['languages']; ?></p>
                         <p class="Describe mb-2"><?php echo $guide['about']; ?></p>
-                        <a href="GuidePages/guide_details.php?guideId=<?php echo $guide['guideId']; ?>" class="button-details">المزيد من التفاصيل</a>
+                        <a href="GuidePages/guide_details.php?guideId=<?php echo $guide['guideId']; ?>" class="btnn"> طلب مسار خاص  </a>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="fw-bolder  mb-4" style="text-align: center; color:#000">حسابات التواصل</h3>
+                        <div class="d-flex flex-column">
+                            <a href="https://twitter.com/" class="social-link tw"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="https://facebook.com/" class="social-link  fb"><i class="fa-brands fa-facebook"></i></a>
+                            <a href="https://www.instagram.com/" class="social-link in"><i class="fa-brands fa-instagram"></i></a>
+                        </div>
                     </div>
                 </div>
+                
             </div>
         </div>
+   
+
     </div>
 </div>
 
