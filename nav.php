@@ -1,6 +1,5 @@
 <?php
-
-// Get the current page from the URL, default to 'home'
+ob_start();
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 if (isset($_SESSION['role'])) {
@@ -71,7 +70,7 @@ if ($page == 'home') {
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto py-0">
                  <?php if ($role == 'admin'): ?>
-                    <a href="/trips/AdminPages/index.php" class="nav-item nav-link">Admin</a>
+                    <a href="admin.php" class="nav-item nav-link">Admin</a>
                 <?php endif; ?>
                 <?php if ($role == 'guide'): ?>
                     <a href="guide.php?form=addPlace" class="nav-item nav-link">Suggest Place</a>
@@ -82,16 +81,27 @@ if ($page == 'home') {
             <a href="index.php?page=packages" class="nav-item nav-link <?= $page == 'packages' ? 'active' : '' ?>">الرحلات </a>
             <a href="index.php?page=team" class="nav-item nav-link <?= $page == 'team' ? 'active' : '' ?>">المرشدين </a>
             <a href="index.php?page=contact" class="nav-item nav-link <?= $page == 'contact' ? 'active' : '' ?>">تواصل معانا </a>
+            <?php if ($role == 'admin'): ?>
+                    <a href="admin.php" class="nav-item nav-link">المدير</a>
+                <?php endif; ?>
+                <?php if ($role == 'guide'): ?>
+                    <a href="guide.php?form=addPlace" class="nav-item nav-link">اقتراح مكان </a>
+                <?php endif; ?>
         </div>
         <?php if (isset($_SESSION['userId'])): ?>
-            <!-- Show Profile and Logout if logged in -->
-            <a href="index.php?page=profile" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
-            <a href="index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
-        <?php else: ?>
-            <a href="index.php?page=login" class="btn btn-primary rounded-pill py-2 px-4" style="margin:5px">تسجيل دخول </a>
-            <!-- Show Register if not logged in -->
-            <a href="index.php?page=register" class="btn btn-primary rounded-pill py-2 px-4">انشاء حساب</a>
-        <?php endif; ?>
+    <!-- Show Profile and Logout if logged in -->
+    <?php if ($_SESSION['role'] == 'guide'): ?>
+        <a href="GuidePages/profile.php" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
+    <?php elseif ($_SESSION['role'] == 'user'): ?>
+        <a href="index.php?page=profile" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
+    <?php endif; ?>
+    
+    <a href="index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
+<?php else: ?>
+    <!-- Show Login and Register if not logged in -->
+    <a href="index.php?page=login" class="btn btn-primary rounded-pill py-2 px-4" style="margin:5px">تسجيل دخول</a>
+    <a href="index.php?page=register" class="btn btn-primary rounded-pill py-2 px-4">إنشاء حساب</a>
+<?php endif; ?>
     </div>
 </nav>
 
@@ -104,7 +114,6 @@ if ($page == 'home') {
                     <h1 class="display-3 text-white mb-3 animated slideInDown"><?= $heroTitle ?></h1>
                     <p class="fs-4 text-white mb-4 animated slideInDown"><?= $heroText ?></p>
                     <?php if ($page == 'home'): ?>
-                    
                     <?php endif; ?>
                 </div>
             </div>

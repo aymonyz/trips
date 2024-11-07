@@ -60,6 +60,7 @@ if ($page == 'home') {
 
 <!-- Navbar & Hero Start -->
  <head>
+    
  <link href="img/favicon.ico" rel="icon">
 
 
@@ -78,12 +79,18 @@ if ($page == 'home') {
 
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
+<style>
+    a{
+        margin-right: 20px;
+        color: white;!important
+    }
+</style>
  </head>
 <div class="container-fluid position-relative p-0">
 <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0 " style="
-    background: #0000008c;
+    background: #14141f;
 ">
-    <a href="index.php" class="navbar-brand p-0">
+    <a href="../index.php" class="navbar-brand p-0">
         <h1 class="text-primary m-0"><i class="fa fa-map-marker-alt me-3"></i>Guide Me</h1>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -92,29 +99,28 @@ if ($page == 'home') {
     <div class="collapse navbar-collapse" id="navbarCollapse" style="
     padding: 25px;
 ">
-        <div class="navbar-nav ms-auto py-0">
-                 <?php if ($role == 'admin'): ?>
-                    <a href="admin.php" class="nav-item nav-link">Admin</a>
+        <div class="navbar-nav ms-auto py-0" >
+                
+            <a href="../index.php?page=home" class="nav-item nav-link <?= $page == 'home' ? 'active' : '' ?>"  style="color: white;">الرئيسة</a>
+            <a href="../index.php?page=Discover" class="nav-item nav-link <?= $page == 'Discover' ? 'active' : '' ?>" style="color: white;">استكشف</a>
+            <a href="../index.php?page=about" class="nav-item nav-link <?= $page == 'about' ? 'active' : '' ?>" style="color: white;">من نحن </a>
+            <a href="../index.php?page=packages" class="nav-item nav-link <?= $page == 'packages' ? 'active' : '' ?>" style="color: white;">الرحلات </a>
+            <a href="../index.php?page=team" class="nav-item nav-link <?= $page == 'team' ? 'active' : '' ?>" style="color: white;">المرشدين </a>
+            <a href="../index.php?page=contact" class="nav-item nav-link <?= $page == 'contact' ? 'active' : '' ?>"style="color: white;">تواصل معانا </a>
+            <?php if ($role == 'admin'): ?>
+                    <a href="admin.php" class="nav-item nav-link" style="color: white;">المدير</a>
                 <?php endif; ?>
                 <?php if ($role == 'guide'): ?>
-                    <a href="guide.php?form=addPlace" class="nav-item nav-link">Suggest Place</a>
-                <?php endif; ?>
-            <a href="index.php?page=home" class="nav-item nav-link <?= $page == 'home' ? 'active' : '' ?>">الرئيسة</a>
-            <a href="index.php?page=Discover" class="nav-item nav-link <?= $page == 'Discover' ? 'active' : '' ?>">استكشف</a>
-            <a href="index.php?page=about" class="nav-item nav-link <?= $page == 'about' ? 'active' : '' ?>">من نحن </a>
-            <a href="index.php?page=packages" class="nav-item nav-link <?= $page == 'packages' ? 'active' : '' ?>">الرحلات </a>
-            <a href="index.php?page=team" class="nav-item nav-link <?= $page == 'team' ? 'active' : '' ?>">المرشدين </a>
-            <a href="index.php?page=contact" class="nav-item nav-link <?= $page == 'contact' ? 'active' : '' ?>">تواصل معانا </a>
+                    <a href="guide.php?form=addPlace" class="nav-item nav-link" style="color: white;">اقتراح مكان </a>
+                <?php endif; ?>       
+        
         </div>
         <?php if (isset($_SESSION['userId'])): ?>
             <!-- Show Profile and Logout if logged in -->
-            <a href="index.php?page=profile" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
-            <a href="index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
+            <a href="dashboard-button.php" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
+            <a href="../index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
         <?php else: ?>
-            <a href="index.php?page=login" class="btn btn-primary rounded-pill py-2 px-4" style="margin:5px">تسجيل دخول </a>
-            <!-- Show Register if not logged in -->
-            <a href="index.php?page=register" class="btn btn-primary rounded-pill py-2 px-4">انشاء حساب</a>
-        <?php endif; ?>
+            <!-- Show Register if not logged in -->        <?php endif; ?>
     </div>
 </nav>
 

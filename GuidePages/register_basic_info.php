@@ -9,21 +9,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $role = "guide"; 
 
     try {
-        // إدخال البيانات الأساسية إلى قاعدة البيانات
-        $query = $pdo->prepare("INSERT INTO user (name, emailAddress, password, role) VALUES (?, ?, ?, ?)");
-        $query->execute([$name, $email, $password, $role]);
+        // التحقق من وجود البريد الإلكتروني في قاعدة البيانات
+        $checkEmailQuery = $pdo->prepare("SELECT COUNT(*) FROM user WHERE emailAddress = ?");
+        $checkEmailQuery->execute([$email]);
+        $emailExists = $checkEmailQuery->fetchColumn();
 
-        // الحصول على معرّف المرشد الجديد
-        $userId = $pdo->lastInsertId();
+        if ($emailExists > 0) {
+            echo "هذا البريد الإلكتروني مسجل بالفعل. يرجى استخدام بريد إلكتروني آخر.";
+        } else {
+            // إدخال البيانات الأساسية إلى قاعدة البيانات
+            $query = $pdo->prepare("INSERT INTO user (name, emailAddress, password, role) VALUES (?, ?, ?, ?)");
+            $query->execute([$name, $email, $password, $role]);
 
-        // حفظ معرّف المرشد في الجلسة لتمريره إلى الصفحة التالية
-        session_start();
-        $_SESSION['userId'] = $userId;
-        $_SESSION['name'] = $name;
+            // الحصول على معرّف المرشد الجديد
+            $userId = $pdo->lastInsertId();
 
-        // توجيه المستخدم إلى صفحة استكمال البيانات
-        header("Location: complete_guide_info.php");
-        exit();
+            // حفظ معرّف المرشد في الجلسة لتمريره إلى الصفحة التالية
+            session_start();
+            $_SESSION['userId'] = $userId;
+            $_SESSION['name'] = $name;
+
+            // توجيه المستخدم إلى صفحة استكمال البيانات
+            header("Location: complete_guide_info.php");
+            exit();
+        }
     } catch (PDOException $e) {
         echo "حدث خطأ أثناء التسجيل: " . $e->getMessage();
     }
