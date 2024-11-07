@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             session_start();
             $_SESSION['userId'] = $userId;
             $_SESSION['name'] = $name;
+            $_SESSION['role'] = $role;
 
             // توجيه المستخدم إلى صفحة استكمال البيانات
             header("Location: complete_guide_info.php");

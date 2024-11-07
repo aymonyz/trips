@@ -44,13 +44,16 @@ if (isset($_POST['addCity'])) {
     if (isset($_FILES['cityImage']) && $_FILES['cityImage']['error'] == 0) {
         // تحديد مسار الحفظ
         $imageName = basename($_FILES['cityImage']['name']);
+        
         $imagePath = '../uploads/' . $imageName;
+        $path='uploads/'.$imageName;
 
         // التحقق من نقل الملف
         if (move_uploaded_file($_FILES['cityImage']['tmp_name'], $imagePath)) {
             $stmt = $pdo->prepare("INSERT INTO cities (Name, ImageURL) VALUES (:name, :imagePath)");
-            $stmt->execute(['name' => $name, 'imagePath' => $imagePath]);
+            $stmt->execute(['name' => $name, 'imagePath' => $path]);
             echo "<div class='alert alert-success'>تم رفع الصورة بنجاح.</div>";
+            exit();
         } else {
             echo "<div class='alert alert-danger'>حدث خطأ أثناء نقل الصورة إلى مجلد 'uploads'.</div>";
             echo "<pre>";
@@ -122,7 +125,7 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
           <tr>
             <td><?= htmlspecialchars($city['CityId']) ?></td>
             <td><?= htmlspecialchars($city['Name']) ?></td>
-            <td><img src="<?= htmlspecialchars($city['ImageURL']) ?>" alt="City Image" class="img-thumbnail"></td>
+            <td><img src="../<?= htmlspecialchars($city['ImageURL']) ?>" alt="City Image" class="img-thumbnail"></td>
             <td>
               <a href="?removeCity=<?= htmlspecialchars($city['CityId']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this city?');">Delete</a>
             </td>
