@@ -1,5 +1,5 @@
 <?php
-include '../db.php'; // Include your database connection
+include 'db.php'; // Include your database connection
 
 // // Retrieve all places
 // $placeQuery = $pdo->query("SELECT * FROM place");

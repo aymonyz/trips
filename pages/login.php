@@ -28,7 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['userId'] = $user['userId'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['name'] = $user['name'];
-            header("Location: index.php?page=home");
+
+            // توجيه المستخدم بناءً على الدور
+            if ($user['role'] === 'admin') {
+                header("Location: admin_dashboard.php");
+            } elseif ($user['role'] === 'guide') {
+                header("Location: GuidePages/dashboard-button.php");
+            } else {
+                header("Location: index.php?page=home");
+            }
             exit();
         } else {
             // إذا كانت كلمة المرور غير صحيحة
@@ -39,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = "لا يوجد مستخدم مسجل بهذا البريد الإلكتروني.";
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -64,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
     </form>
-<<<<<<< HEAD
 
     <?php if ($error): ?>
         <p class="text-danger mt-3"><?= htmlspecialchars($error) ?></p>
@@ -72,9 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <p>ليس لديك حساب؟ <a href="index.php?page=register">سجل هنا</a></p>
     <p>هل تريد أن تصبح مرشدًا؟ <a href="GuidePages/register.php" class="btn btn-secondary mt-2">تسجيل كمرشد</a></p>
-=======
-    <p>ليس لديك حساب؟ <a href="index.php?page=register">سجل هنا</a></p>
->>>>>>> 5c7cbe05bc0ffbc61da558e6af3a1aba950991ec
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

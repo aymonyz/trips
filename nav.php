@@ -1,4 +1,5 @@
 <?php
+ob_start();
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 if (isset($_SESSION['role'])) {
@@ -68,18 +69,19 @@ if ($page == 'home') {
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto py-0">
-                 <?php if ($role == 'admin'): ?>
-                    <a href="admin.php" class="nav-item nav-link">Admin</a>
-                <?php endif; ?>
-                <?php if ($role == 'guide'): ?>
-                    <a href="guide.php?form=addPlace" class="nav-item nav-link">Suggest Place</a>
-                <?php endif; ?>
+                
             <a href="index.php?page=home" class="nav-item nav-link <?= $page == 'home' ? 'active' : '' ?>">الرئيسة</a>
             <a href="index.php?page=Discover" class="nav-item nav-link <?= $page == 'Discover' ? 'active' : '' ?>">استكشف</a>
             <a href="index.php?page=about" class="nav-item nav-link <?= $page == 'about' ? 'active' : '' ?>">من نحن </a>
             <a href="index.php?page=packages" class="nav-item nav-link <?= $page == 'packages' ? 'active' : '' ?>">الرحلات </a>
             <a href="index.php?page=team" class="nav-item nav-link <?= $page == 'team' ? 'active' : '' ?>">المرشدين </a>
             <a href="index.php?page=contact" class="nav-item nav-link <?= $page == 'contact' ? 'active' : '' ?>">تواصل معانا </a>
+            <?php if ($role == 'admin'): ?>
+                    <a href="admin.php" class="nav-item nav-link">المدير</a>
+                <?php endif; ?>
+                <?php if ($role == 'guide'): ?>
+                    <a href="guide.php?form=addPlace" class="nav-item nav-link">اقتراح مكان </a>
+                <?php endif; ?>
         </div>
         <?php if (isset($_SESSION['userId'])): ?>
     <!-- Show Profile and Logout if logged in -->
@@ -107,7 +109,6 @@ if ($page == 'home') {
                     <h1 class="display-3 text-white mb-3 animated slideInDown"><?= $heroTitle ?></h1>
                     <p class="fs-4 text-white mb-4 animated slideInDown"><?= $heroText ?></p>
                     <?php if ($page == 'home'): ?>
-                    
                     <?php endif; ?>
                 </div>
             </div>

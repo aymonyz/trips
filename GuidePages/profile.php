@@ -50,11 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $updateGuideQuery->execute([$phone, $facebook, $twitter, $instagram, $userId]);
     
     echo "تم تحديث البيانات بنجاح!";
+     header("Location: ".$_SERVER['PHP_SELF']);
+   
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -83,8 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: none;
             border-radius: 5px;
         }
-        .btn-primary:hover {
+        .btn-primaryy:hover {
             background-color: #555;
+            color: white;
         }
     </style>
 </head>
@@ -92,7 +96,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <?php include '../base_nav.php'; ?>
 
-<div class="container">
+<div class="container" style="
+    margin: 100px auto;
+    height: fit-content;
+">
     <h2>تعديل الملف الشخصي</h2>
     <form method="POST" enctype="multipart/form-data">
         <div class="row">
