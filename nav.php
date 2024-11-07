@@ -71,7 +71,7 @@ if ($page == 'home') {
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto py-0">
                  <?php if ($role == 'admin'): ?>
-                    <a href="admin.php" class="nav-item nav-link">Admin</a>
+                    <a href="/trips/AdminPages/index.php" class="nav-item nav-link">Admin</a>
                 <?php endif; ?>
                 <?php if ($role == 'guide'): ?>
                     <a href="guide.php?form=addPlace" class="nav-item nav-link">Suggest Place</a>

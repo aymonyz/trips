@@ -68,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,91 +75,156 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Tours</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* تحسين تصميم الصفحة */
+        .container {
+            margin-top: 50px;
+            max-width: 900px;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .btn-primary, .btn-warning, .btn-danger {
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .table {
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .table-striped tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container mt-5">
-    <h1 class="mb-4">Add/Update Tour</h1>
+<div class="container">
+    <h1>إضافة / تحديث جولة</h1>
     <form method="POST" enctype="multipart/form-data">
         <input type="hidden" id="tourId" name="tourId">
+        
         <div class="mb-3">
-            <label for="guideId" class="form-label">Select Guide</label>
+            <label for="guideId" class="form-label">اختر الدليل</label>
             <select class="form-control" id="guideId" name="guideId" required>
                 <?php foreach ($guides as $guide): ?>
-                    <option value="<?= $guide['guideId'] ?>"><?= $guide['name'] ?></option>
+                    <option value="<?= $guide['guideId'] ?>"><?= htmlspecialchars($guide['name']) ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
+        
         <div class="mb-3">
-            <label for="location" class="form-label">Tour Location</label>
+            <label for="location" class="form-label">مكان الجولة</label>
             <input type="text" class="form-control" id="location" name="location" required>
         </div>
+        
         <div class="mb-3">
-            <label for="date" class="form-label">Date</label>
+            <label for="date" class="form-label">التاريخ</label>
             <input type="date" class="form-control" id="date" name="date" required>
         </div>
+        
         <div class="mb-3">
-            <label for="price" class="form-label">Price</label>
+            <label for="price" class="form-label">السعر</label>
             <input type="number" step="0.01" class="form-control" id="price" name="price" required>
         </div>
+        
         <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
+            <label for="title" class="form-label">العنوان</label>
             <input type="text" class="form-control" id="title" name="title" required>
         </div>
+        
         <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
+            <label for="description" class="form-label">الوصف</label>
             <textarea class="form-control" id="description" name="description" required></textarea>
         </div>
+        
         <div class="mb-3">
-            <label for="city" class="form-label">City</label>
+            <label for="city" class="form-label">المدينة</label>
             <input type="text" class="form-control" id="city" name="city" required>
         </div>
+        
         <div class="mb-3">
-            <label for="duration" class="form-label">Duration (hours)</label>
+            <label for="duration" class="form-label">المدة (بالساعات)</label>
             <input type="number" class="form-control" id="duration" name="duration" required>
         </div>
+        
         <div class="mb-3">
-            <label for="tourImage" class="form-label">Tour Image (optional)</label>
+            <label for="tourImage" class="form-label">صورة الجولة (اختياري)</label>
             <input type="file" class="form-control" id="tourImage" name="tourImage" accept="image/*">
         </div>
+        
         <div class="mb-3">
-            <label for="places" class="form-label">Select Places</label>
+            <label for="places" class="form-label">اختر الأماكن</label>
             <select class="form-control" id="places" name="places[]" multiple required>
                 <?php foreach ($places as $place): ?>
-                    <option value="<?= $place['placeId'] ?>"><?= $place['name'] ?></option>
+                    <option value="<?= $place['placeId'] ?>"><?= htmlspecialchars($place['name']) ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary" name="addTour">Save Tour</button>
+        
+        <button type="submit" class="btn btn-primary btn-block" name="addTour">حفظ الجولة</button>
     </form>
 
-    <h1 class="mt-5">All Tours</h1>
-    <table class="table table-bordered">
+    <h1 class="mt-5">كل الجولات</h1>
+    <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Location</th>
-                <th>Date</th>
-                <th>Price</th>
-                <th>City</th>
-                <th>Duration</th>
-                <th>Guide</th>
-                <th>Actions</th>
+                <th>العنوان</th>
+                <th>المكان</th>
+                <th>التاريخ</th>
+                <th>السعر</th>
+                <th>المدينة</th>
+                <th>المدة</th>
+                <th>الدليل</th>
+                <th>الإجراءات</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($tours as $tour): ?>
                 <tr>
-                    <td><?= $tour['title'] ?></td>
-                    <td><?= $tour['location'] ?></td>
-                    <td><?= $tour['date'] ?></td>
-                    <td><?= $tour['price'] ?></td>
-                    <td><?= $tour['city'] ?></td>
-                    <td><?= $tour['duration'] ?></td>
-                    <td><?= $tour['guideName'] ?></td> <!-- Use guideName instead of guideId -->
+                    <td><?= htmlspecialchars($tour['title']) ?></td>
+                    <td><?= htmlspecialchars($tour['location']) ?></td>
+                    <td><?= htmlspecialchars($tour['date']) ?></td>
+                    <td>$<?= number_format($tour['price'], 2) ?></td>
+                    <td><?= htmlspecialchars($tour['city']) ?></td>
+                    <td><?= htmlspecialchars($tour['duration']) ?> ساعة</td>
+                    <td><?= htmlspecialchars($tour['guideName']) ?></td> <!-- Use guideName instead of guideId -->
                     <td>
-                        <a href="edit.php?tourId=<?= $tour['tourId'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                        <a href="?deleteTour=<?= $tour['tourId'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this tour?');">Delete</a>
+                        <a href="edit.php?tourId=<?= $tour['tourId'] ?>" class="btn btn-warning btn-sm">تعديل</a>
+                        <a href="?deleteTour=<?= $tour['tourId'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد من حذف هذه الجولة؟');">حذف</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -168,5 +232,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </table>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
