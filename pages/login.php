@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // توجيه المستخدم بناءً على الدور
             if ($user['role'] === 'admin') {
-                header("Location: admin_dashboard.php");
+                header("Location: AdminPages/index.php");
             } elseif ($user['role'] === 'guide') {
                 header("Location: GuidePages/dashboard-button.php");
             } else {

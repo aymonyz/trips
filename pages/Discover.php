@@ -82,10 +82,7 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
         </div>
 
         
-        <?php
-// تعديل مسار الصورة ليزيل ../
-$cityImage = str_replace("../", "", htmlspecialchars($places[0]['CityImage'])); 
-?>
+
         <div class="row g-4 justify-content-center">
             <?php foreach ($places as $place): ?>
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
