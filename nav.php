@@ -69,7 +69,12 @@ if ($page == 'home') {
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto py-0">
-                
+                 <?php if ($role == 'admin'): ?>
+                    <a href="admin.php" class="nav-item nav-link">Admin</a>
+                <?php endif; ?>
+                <?php if ($role == 'guide'): ?>
+                    <a href="guide.php?form=addPlace" class="nav-item nav-link">Suggest Place</a>
+                <?php endif; ?>
             <a href="index.php?page=home" class="nav-item nav-link <?= $page == 'home' ? 'active' : '' ?>">الرئيسة</a>
             <a href="index.php?page=Discover" class="nav-item nav-link <?= $page == 'Discover' ? 'active' : '' ?>">استكشف</a>
             <a href="index.php?page=about" class="nav-item nav-link <?= $page == 'about' ? 'active' : '' ?>">من نحن </a>
