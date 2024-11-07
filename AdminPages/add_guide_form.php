@@ -44,13 +44,13 @@ if (isset($_GET['delete'])) {
     $tourCount = $checkToursQuery->fetchColumn();
 
     if ($tourCount > 0) {
-        echo "Cannot delete this guide. There are associated tours. Please delete the tours first.";
+        echo "لا يمكن حذف هذا الدليل. هناك جولات مرتبطة. يرجى حذف الرحلات  أولاً.";
     } else {
         // No associated tours, proceed to delete the guide
         try {
             $deleteQuery = $pdo->prepare("DELETE FROM tourguide WHERE guideId = ?");
             $deleteQuery->execute([$guideId]);
-            echo "Guide deleted successfully!";
+            echo "تم حذف المرشد بنجاح!";
         } catch (PDOException $e) {
             echo "Error deleting guide: " . $e->getMessage();
         }
@@ -163,7 +163,7 @@ if (isset($_GET['edit'])) {
     </style>
 </head>
 <body>
-محتاج تعديل 
+
 <div class="container">
     <h1 class="mb-4"><?= $currentGuide ? "تحديث مشرف" : "إضافة مشرف" ?></h1>
     <form method="POST" enctype="multipart/form-data">

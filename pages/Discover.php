@@ -51,7 +51,7 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="package-item">
                         <div class="overflow-hidden">
-                            <img class="img-fluid" src="<?php echo $cityImage; ?>" alt="City Image">
+                        <img class="img-fluid" src="/trips/<?php echo $cityImage; ?>" alt="City Image">
                         </div>
                         <div class="d-flex border-bottom">
                             <small class="flex-fill text-center border-end py-2">

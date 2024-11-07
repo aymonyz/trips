@@ -76,7 +76,7 @@
         <a href="add_City_form.php" class="active">إضافة مدينة</a>
         <a href="add_guide_form.php">إضافة مشرف</a>
         <a href="add_place_form.php">إضافة مكان</a>
-        <a href="add_tour_form.php">الجولات</a>
+        <a href="add_tour_form.php">الرحلات</a>
         <a href="getBooking.php">أدلة السفر</a>
         <a href="getMessage.php">اتصل بنا</a>
         <a href="GetSuggested.php">xاقتراحات</a>

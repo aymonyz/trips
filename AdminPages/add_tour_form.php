@@ -1,6 +1,32 @@
 <?php
 include '../db.php';  // Database connection
 include 'index.php'; 
+// التحقق من وجود طلب حذف للجولة
+if (isset($_GET['deleteTour'])) {
+    $tourId = $_GET['deleteTour'];
+    
+    try {
+        $pdo->beginTransaction();
+        
+        // حذف الأماكن المرتبطة بالرحلة من جدول `Tour_Places`
+        $deletePlacesStmt = $pdo->prepare("DELETE FROM Tour_Places WHERE tourId = :tourId");
+        $deletePlacesStmt->execute(['tourId' => $tourId]);
+        
+        // حذف الرحلة من جدول `tour`
+        $deleteTourStmt = $pdo->prepare("DELETE FROM tour WHERE tourId = :tourId");
+        $deleteTourStmt->execute(['tourId' => $tourId]);
+        
+        $pdo->commit();
+        echo "<div class='alert alert-success'>تم حذف الرحلة بنجاح.</div>";
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        echo "<div class='alert alert-danger'>حدث خطأ أثناء حذف الرحلة: " . htmlspecialchars($e->getMessage()) . "</div>";
+    }
+
+    // إعادة التوجيه لتجنب تكرار الحذف عند تحديث الصفحة
+    header("Location: add_tour_form.php?form=addTour");
+    exit();
+}
 // Fetch all guides for the dropdown
 $guidesStmt = $pdo->query("SELECT guideId, name FROM TourGuide");
 $guides = $guidesStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -55,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtPlaces->execute([$tourId, $placeId]);
             }
         }
+        
 
         $pdo->commit();
         echo "Tour and associated places added successfully!";
@@ -64,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Redirect to avoid re-triggering the insertion on page refresh
-    header("Location: admin.php?form=addTour");
+    header("Location: add_tour_form.php?form=addTour");
     exit();
 }
 ?>
@@ -133,12 +160,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 
 <div class="container">
-    <h1>إضافة / تحديث جولة</h1>
+    <h1>إضافة / تحديث رحلة</h1>
     <form method="POST" enctype="multipart/form-data">
         <input type="hidden" id="tourId" name="tourId">
         
         <div class="mb-3">
-            <label for="guideId" class="form-label">اختر الدليل</label>
+            <label for="guideId" class="form-label">اختر المرشد</label>
             <select class="form-control" id="guideId" name="guideId" required>
                 <?php foreach ($guides as $guide): ?>
                     <option value="<?= $guide['guideId'] ?>"><?= htmlspecialchars($guide['name']) ?></option>
@@ -147,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         
         <div class="mb-3">
-            <label for="location" class="form-label">مكان الجولة</label>
+            <label for="location" class="form-label">مكان الرحلة</label>
             <input type="text" class="form-control" id="location" name="location" required>
         </div>
         
@@ -162,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         
         <div class="mb-3">
-            <label for="title" class="form-label">العنوان</label>
+            <label for="title" class="form-label">عوان الانطلاق</label>
             <input type="text" class="form-control" id="title" name="title" required>
         </div>
         
@@ -172,7 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         
         <div class="mb-3">
-            <label for="city" class="form-label">المدينة</label>
+            <label for="city" class="form-label">اسم المسار </label>
             <input type="text" class="form-control" id="city" name="city" required>
         </div>
         
@@ -182,23 +209,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         
         <div class="mb-3">
-            <label for="tourImage" class="form-label">صورة الجولة (اختياري)</label>
+            <label for="tourImage" class="form-label">صورة الرحلة (اختياري)</label>
             <input type="file" class="form-control" id="tourImage" name="tourImage" accept="image/*">
         </div>
-        
         <div class="mb-3">
-            <label for="places" class="form-label">اختر الأماكن</label>
-            <select class="form-control" id="places" name="places[]" multiple required>
-                <?php foreach ($places as $place): ?>
-                    <option value="<?= $place['placeId'] ?>"><?= htmlspecialchars($place['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+    <label class="form-label">اختر الأماكن (يمكنك اختيار 3 أماكن كحد أقصى)</label>
+    <div>
+        <?php foreach ($places as $place): ?>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="places[]" id="place<?= $place['placeId'] ?>" value="<?= $place['placeId'] ?>">
+                <label class="form-check-label" for="place<?= $place['placeId'] ?>">
+                    <?= htmlspecialchars($place['name']) ?>
+                </label>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
         
-        <button type="submit" class="btn btn-primary btn-block" name="addTour">حفظ الجولة</button>
+        <button type="submit" class="btn btn-primary btn-block" name="addTour">حفظ الرحلة</button>
     </form>
 
-    <h1 class="mt-5">كل الجولات</h1>
+    <h1 class="mt-5">كل الرحلات </h1>
     <table class="table table-striped table-hover">
         <thead>
             <tr>
@@ -206,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <th>المكان</th>
                 <th>التاريخ</th>
                 <th>السعر</th>
-                <th>المدينة</th>
+                <th>اسم المسار</th>
                 <th>المدة</th>
                 <th>الدليل</th>
                 <th>الإجراءات</th>
@@ -224,16 +255,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <td><?= htmlspecialchars($tour['guideName']) ?></td> <!-- Use guideName instead of guideId -->
                     <td>
                         <a href="edit.php?tourId=<?= $tour['tourId'] ?>" class="btn btn-warning btn-sm">تعديل</a>
-                        <a href="?deleteTour=<?= $tour['tourId'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد من حذف هذه الجولة؟');">حذف</a>
+                        <a href="?deleteTour=<?= $tour['tourId'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد من حذف هذه الرحلة؟');">حذف</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const maxOptions = 3; // حدد الحد الأقصى هنا
+        const checkboxes = document.querySelectorAll('input[name="places[]"]');
 
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const checkedCount = document.querySelectorAll('input[name="places[]"]:checked').length;
+                if (checkedCount > maxOptions) {
+                    this.checked = false;
+                    alert('يمكنك اختيار ' + maxOptions + ' أماكن كحد أقصى.');
+                }
+            });
+        });
+    });
+</script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+

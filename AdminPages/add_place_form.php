@@ -29,31 +29,39 @@ if (isset($_POST['addPlace'])) {
     $placeName = $_POST['placeName'];
     $placeDescription = $_POST['placeDescription'];
     $cityId = $_POST['cityId'];
+    $imagePaths = [];
 
-    // التحقق من تحميل الصورة
-    if (isset($_FILES['placeImage']) && $_FILES['placeImage']['error'] == 0) {
-        $imageName = basename($_FILES['placeImage']['name']);
-        $imagePath = '../uploads/' . $imageName;
+    // التحقق من تحميل الصور
+    if (!empty($_FILES['placeImages']['name'][0])) {
+        foreach ($_FILES['placeImages']['tmp_name'] as $index => $tmpName) {
+            $imageName = basename($_FILES['placeImages']['name'][$index]);
+            $imagePath = '../uploads/' . $imageName;
 
-        // نقل الملف إلى مجلد التحميلات
-        if (move_uploaded_file($_FILES['placeImage']['tmp_name'], $imagePath)) {
-            try {
-                $stmt = $pdo->prepare("INSERT INTO place (name, description, imageURL, CityId, Approve) VALUES (:name, :description, :imageURL, :cityId, b'1')");
-                $stmt->execute([
-                    'name' => $placeName,
-                    'description' => $placeDescription,
-                    'imageURL' => $imagePath,
-                    'cityId' => $cityId
-                ]);
-                echo "<div class='alert alert-success'>تمت إضافة المكان بنجاح.</div>";
-            } catch (PDOException $e) {
-                echo "<div class='alert alert-danger'>حدث خطأ أثناء إضافة المكان: " . htmlspecialchars($e->getMessage()) . "</div>";
+            // نقل الملف إلى مجلد التحميلات
+            if (move_uploaded_file($tmpName, $imagePath)) {
+                $imagePaths[] = $imagePath;
+            } else {
+                echo "<div class='alert alert-danger'>حدث خطأ أثناء تحميل الصورة رقم " . ($index + 1) . ".</div>";
             }
-        } else {
-            echo "<div class='alert alert-danger'>حدث خطأ أثناء تحميل الصورة.</div>";
+        }
+
+        // تحويل مسارات الصور إلى نص لتخزينها في قاعدة البيانات
+        $imagePathsString = implode(',', $imagePaths);
+
+        try {
+            $stmt = $pdo->prepare("INSERT INTO place (name, description, imageURL, CityId, Approve) VALUES (:name, :description, :imageURL, :cityId, b'1')");
+            $stmt->execute([
+                'name' => $placeName,
+                'description' => $placeDescription,
+                'imageURL' => $imagePathsString,
+                'cityId' => $cityId
+            ]);
+            echo "<div class='alert alert-success'>تمت إضافة المكان بنجاح.</div>";
+        } catch (PDOException $e) {
+            echo "<div class='alert alert-danger'>حدث خطأ أثناء إضافة المكان: " . htmlspecialchars($e->getMessage()) . "</div>";
         }
     } else {
-        echo "<div class='alert alert-warning'>يرجى تحميل صورة للمكان.</div>";
+        echo "<div class='alert alert-warning'>يرجى تحميل صورة واحدة على الأقل للمكان.</div>";
     }
 }
 
@@ -92,8 +100,8 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
       <textarea class="form-control" id="placeDescription" name="placeDescription" required></textarea>
     </div>
     <div class="mb-3">
-      <label for="placeImage" class="form-label">صورة المكان</label>
-      <input type="file" class="form-control" id="placeImage" name="placeImage" accept="image/*" required>
+      <label for="placeImages" class="form-label">صور المكان</label>
+      <input type="file" class="form-control" id="placeImages" name="placeImages[]" accept="image/*" multiple required>
     </div>
     <div class="mb-3">
       <label for="citySelect" class="form-label">المدينة</label>
