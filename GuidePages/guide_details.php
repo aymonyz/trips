@@ -246,7 +246,7 @@ if (!$guide) {
                         </div>
                         <p class="mb-2 lang"><?php echo $guide['languages']; ?></p>
                         <p class="Describe mb-2"><?php echo $guide['about']; ?></p>
-                        <a href="GuidePages/guide_details.php?guideId=<?php echo $guide['guideId']; ?>" class="btnn"> طلب مسار خاص  </a>
+                        <!-- <a href="GuidePages/guide_details.php?guideId=<?php echo $guide['guideId']; ?>" class="btnn"> طلب مسار خاص  </a> -->
                     </div>
                     <div class="col-md-3">
                         <h3 class="fw-bolder  mb-4" style="text-align: center; color:#000">حسابات التواصل</h3>

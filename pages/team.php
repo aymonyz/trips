@@ -125,69 +125,60 @@ $languagesList = array_unique($languagesList); // إزالة التكرارات
             <h1 class="mb-5">تعرَّف على دليلنا</h1>
         </div>
         <div class="row Search">
-                        <div class="col-md-12">
-                            <div class="input-group">
-                                <input name="search" id="search" type="text" class="form-control" placeholder="المرشد السياحي">
-                                <select class="form-control" id="CityId" name="CityId">
-                                    <option value="0" selected="selected">المدينة</option>
-                                    <?php foreach ($cities as $city): ?>
-                                        <option value="<?= htmlspecialchars($city['CityId']) ?>"><?= htmlspecialchars($city['Name']) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <select class="form-control" id="Language" name="Language">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <input name="search" id="search" type="text" class="form-control" placeholder="المرشد السياحي">
+                    <select class="form-control" id="CityId" name="CityId">
+                        <option value="0" selected="selected">المدينة</option>
+                        <?php foreach ($cities as $city): ?>
+                            <option value="<?= htmlspecialchars($city['Name']) ?>"><?= htmlspecialchars($city['Name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <select class="form-control" id="Language" name="Language">
                         <option value="">اللغة</option>
                         <?php foreach ($languagesList as $language): ?>
                             <option value="<?= htmlspecialchars($language) ?>"><?= htmlspecialchars($language) ?></option>
                         <?php endforeach; ?>
                     </select>
-                                <button class="btn dse" type="submit" style="border-radius: 10px 0px 0px 10px;">البحث</button>
-                            </div>
-                        </div>
-                    </div>
-        <div class="row g-8">
-           
-                   
-            
+                    <button class="btn dse" type="button" onclick="filterGuides()" style="border-radius: 10px 0px 0px 10px;">البحث</button>
+                </div>
+            </div>
+        </div>
+        <div class="row g-8" id="guide-list">
             <?php
             // Fetch guides from the database
-            $stmt = $pdo->query("SELECT guideId, name, rating, imageURL, facebook, twitter, instagram, languages,about FROM tourguide");
-            
-
+            $stmt = $pdo->query("SELECT guideId, name, rating, imageURL, facebook, twitter, instagram, languages, about FROM tourguide");
             while ($guide = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $id=$guide['guideId'];
+                $id = $guide['guideId'];
                 $tourStmt = $pdo->prepare("SELECT * FROM tour WHERE guideId = ?");
                 $pladeStmt = $pdo->prepare("SELECT * FROM place WHERE guideid = ?");
                 $tourStmt->execute([$id]);
                 $pladeStmt->execute([$id]);
-
                 $place = $pladeStmt->fetchAll(PDO::FETCH_ASSOC); 
                 $tours = $tourStmt->fetchAll(PDO::FETCH_ASSOC); 
                 $tourCount = count($tours);
-                $placeCount= count($place);
-                $cityQuery = $pdo->query("SELECT CityId, Name FROM Cities");
-                $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
-                ?>
-                <div class="col-lg-10 col-md-6 wow fadeInUp new" data-wow-delay="0.1s" >
-
-
-                    <div class="team-item d-flex align-items-star border  style">
-                        <!-- محتوي الصوره  -->
-                        <div class="team-img mrg">
-                            <img class="img-fluid rounded-circle" src="<?php echo $guide['imageURL']; ?>" alt="Guide Image" width="96" height="96">
-                        </div>
-
-                        <!-- باقي العناصر  -->
-                        <div class="ms-4 shape" style=" ">
-                            <h5 class="mb-4"><?php echo $guide['name']; ?></h5>
-                            <div class="style-mid">
-
+                $placeCount = count($place);
+                $languages = explode(', ', $guide['languages']);
+                $languagesCount = count($languages);
+            ?>
+            <div class="col-lg-10 col-md-6 wow fadeInUp new guide-item" data-wow-delay="0.1s"
+                 data-name="<?= htmlspecialchars($guide['name']) ?>"
+                 data-city="<?= htmlspecialchars($cityName ?? '') ?>"
+                 data-languages="<?= htmlspecialchars(implode(',', $languages)) ?>">
+                <div class="team-item d-flex align-items-star border style">
+                    <div class="team-img mrg">
+                        <img class="img-fluid rounded-circle" src="<?php echo $guide['imageURL']; ?>" alt="Guide Image" width="96" height="96">
+                    </div>
+                    <div class="ms-4 shape" style=" ">
+                        <h5 class="mb-4"><?php echo $guide['name']; ?></h5>
+                        <div class="style-mid">
                             <div class="items mb-2">
                                 <div class="bulid-icon">
                                     <i class="fa-solid fa-share"></i>
                                 </div>
                                <div class="bulid-text">
                                     <span class="text-muted" >عدد المسارات</span>
-                                    <span> <?php  echo $tourCount?></span>
+                                    <span> <?php  echo $tourCount ?></span>
                                </div>
                             </div>
                             <div class="items">
@@ -196,7 +187,7 @@ $languagesList = array_unique($languagesList); // إزالة التكرارات
                                 </div>
                                 <div class="bulid-text">
                                     <span class="text-muted">عدد الاماكن</span>
-                                    <span> <?php echo $placeCount?></span>
+                                    <span> <?php echo $placeCount ?></span>
                                </div>
                             </div>
                             <div class="items">
@@ -205,94 +196,44 @@ $languagesList = array_unique($languagesList); // إزالة التكرارات
                                 </div>
                                 <div class="bulid-text">
                                     <span class="text-muted ">عدد اللغات</span>
-                                    <?php 
-                                        $languages = explode(', ', $guide['languages']); // تحويل النص إلى مصفوفة
-                                        echo count($languages);
-                                        $languagesCount= count($languages); // عرض عدد اللغات
-                                        ?> لغات
+                                    <?php echo $languagesCount; ?> لغات
                                 </div>
                             </div>
-
-                            </div>
-                            <p class=" mb-2 lang"> <?php echo $guide['languages']; ?> </p>
-                            <p class="Describe mb-2"> <?php echo $guide['about'] ?></p>
-
-                            <!-- <p class="text-warning mb-2">التقييم: <?php echo str_repeat('★', $guide['rating']); ?></p> -->
-                            <a href="GuidePages/guide_details.php?guideId=<?php echo $guide['guideId']; ?>&languagesCount=<?php echo $languagesCount; ?>&tourCount=<?php echo $tourCount; ?>&placeCount=<?php echo $placeCount; ?>" class="button-details">المزيد من التفاصيل</a>
-                            </div>
-
+                        </div>
+                        <p class="mb-2 lang"> <?php echo implode(', ', $languages); ?> </p>
+                        <!-- <p class="Describe mb-2"> <?php echo $guide['about'] ?></p> -->
+                        <a href="GuidePages/guide_details.php?guideId=<?php echo $guide['guideId']; ?>&languagesCount=<?php echo $languagesCount; ?>&tourCount=<?php echo $tourCount; ?>&placeCount=<?php echo $placeCount; ?>" class="button-details">المزيد من التفاصيل</a>
                     </div>
                 </div>
-                <?php
-            }
-            ?>
+            </div>
+            <?php } ?>
         </div>
     </div>
 </div>
-<!-- Team End -->
 
+<!-- JavaScript for filtering -->
+<script>
+    function filterGuides() {
+        const searchInput = document.getElementById('search').value.toLowerCase();
+        const selectedCity = document.getElementById('CityId').value;
+        const selectedLanguage = document.getElementById('Language').value;
 
+        document.querySelectorAll('.guide-item').forEach(guide => {
+            const guideName = guide.getAttribute('data-name').toLowerCase();
+            const guideCity = guide.getAttribute('data-city');
+            const guideLanguages = guide.getAttribute('data-languages');
 
+            // Check if each criterion matches the selected filters
+            const nameMatch = !searchInput || guideName.includes(searchInput);
+            const cityMatch = selectedCity === '0' || guideCity === selectedCity;
+            const languageMatch = !selectedLanguage || guideLanguages.includes(selectedLanguage);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
-<option value="اللغة الصينية">اللغة الصينية</option>
-                                        <option value="اللغة الفرنسية">اللغة الفرنسية</option>
-                                        <option value="لغة الاشارة">لغة الاشارة</option>
-                                        <option value="اللغة الألمانية">اللغة الألمانية</option>
-                                        <option value="اللغة الإسبانية">اللغة الإسبانية</option>
-                                        <option value="اللغة الروسية">اللغة الروسية</option>
-                                        <option value="الأوزبكية">الأوزبكية</option>
-                                        <option value="الفرنسية">الفرنسية</option>
-                                        <option value="اليابانية">اليابانية</option>
-                                        <option value="التركية">التركية</option>
-                                        <option value="الأردية">الأردية</option>
-                                        <option value="الإيطالية">الإيطالية</option>
-                                        <option value="اللغة اليابانية">اللغة اليابانية</option>
-                                        <option value="الانجليزيه">الانجليزيه</option>
-                                        <option value="عربي">عربي</option>
-                                        <option value="اللغة الصينية- الماندرين">اللغة الصينية- الماندرين</option>
-                                        <option value="اليابانيه">اليابانيه</option>
-                                        <option value="العربية">العربية</option>
-                                        <option value="لغة الإشارة">لغة الإشارة</option>
-                                        <option value="اللغةالعربية">اللغةالعربية</option>
-                                        <option value="اللغة العربية ">اللغة العربية </option>
-                                        <option value="English">English</option>
-                                        <option value="العربية ">العربية </option>
-                                        <option value="الانجلييزية ">الانجلييزية </option>
-                                        <option value="اللغة الإنجليزية ">اللغة الإنجليزية </option>
-                                        <option value="الاسبانية">الاسبانية</option> -->
+            // Display or hide the guide based on the filters
+            if (nameMatch && cityMatch && languageMatch) {
+                guide.style.display = 'block';
+            } else {
+                guide.style.display = 'none';
+            }
+        });
+    }
+</script>
