@@ -6,6 +6,7 @@ include 'db.php';
 $searchCity = isset($_GET['city']) ? $_GET['city'] : '';
 $searchDate = isset($_GET['date']) ? $_GET['date'] : '';
 $searchTourName = isset($_GET['tourName']) ? $_GET['tourName'] : '';
+
 // SQL query to fetch tours with guide name
 $sql = "SELECT Tour.*, TourGuide.name AS guideName FROM Tour 
         JOIN TourGuide ON Tour.guideId = TourGuide.guideId";
@@ -15,19 +16,19 @@ $params = [];
 
 // إذا تم إدخال المدينة، أضفها كشرط
 if (!empty($searchCity)) {
-    $conditions[] = "city LIKE :city";
-    $params[':city'] = '%' . $searchCity . '%';
+    $conditions[] = "Tour.cityId = :cityId";
+    $params[':cityId'] = $searchCity;
 }
 
 // إذا تم إدخال التاريخ، أضفه كشرط
 if (!empty($searchDate)) {
-    $conditions[] = "date = :date";
+    $conditions[] = "Tour.date = :date";
     $params[':date'] = $searchDate;
 }
 
 // إذا تم إدخال اسم المسار، أضفه كشرط
 if (!empty($searchTourName)) {
-    $conditions[] = "tourName LIKE :tourName";
+    $conditions[] = "Tour.title LIKE :tourName";
     $params[':tourName'] = '%' . $searchTourName . '%';
 }
 
@@ -46,6 +47,10 @@ foreach ($params as $key => $value) {
 $stmt->execute();
 $tours = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $tourCount = count($tours);
+
+// جلب قائمة المدن من قاعدة البيانات
+$citiesQuery = $pdo->query("SELECT CityId, Name FROM Cities ORDER BY Name ASC");
+$cities = $citiesQuery->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!-- صندوق البحث -->
@@ -54,42 +59,12 @@ $tourCount = count($tours);
         <input type="hidden" name="page" value="packages">
         <div class="row mb-4">
             <div class="col-md-4">
-                
                 <select name="city" class="form-control">
-
                     <option value="">اختر المدينة</option>
-                    <?php
-                    // قائمة المدن مع المعرفات الخاصة بها
-                    $cities = [
-                        2 => "الأحساء",
-                        3 => "مكة المكرمة",
-                        4 => "المدينة المنورة",
-                        5 => "جدة",
-                        8 => "الخبر",
-                        9 => "الرياض",
-                        10 => "الطايف",
-                        11 => "وادي لجب والجبل الأسود",
-                        12 => "جيزان",
-                        14 => "حائل",
-                        15 => "الباحة",
-                        16 => "الجنوب",
-                        17 => "الجوف",
-                        18 => "غير معروف",
-                        19 => "العلا",
-                        24 => "ابها",
-                        49 => "عسير",
-                        66 => "جازان",
-                        77 => "املج",
-                        139 => "الرياض",
-                        368 => "تبوك",
-                        564 => "سكاكا",
-                        565 => "خميس مشيط",
-                        566 => "نجران",
-                        568 => "جزيرة تاروت",
-                        570 => "العيص"
-                    ];
-                    foreach ($cities as $value => $name): ?>
-                        <option value="<?php echo $value; ?>" <?php echo ($searchCity == $value) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                    <?php foreach ($cities as $city): ?>
+                        <option value="<?php echo htmlspecialchars($city['CityId']); ?>" <?php echo ($searchCity == $city['CityId']) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($city['Name']); ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -105,9 +80,11 @@ $tourCount = count($tours);
         </div>
     </form>
 </div>
+
 <?php
 define('BASE_URL', 'http://localhost/trips/uploads/'); // استبدل `localhost/trips/uploads/` بمسار الصور الصحيح
 ?>
+
 <!-- عرض النتائج -->
 <div class="container-xxl py-5">
     <div class="container">
@@ -116,10 +93,9 @@ define('BASE_URL', 'http://localhost/trips/uploads/'); // استبدل `localhos
             <h1 class="mb-5">عروض رائعة</h1>
         </div>
         <!-- عرض عدد الرحلات -->
-<div class="container">
-    <h4 class="text-center">
-    (عدد المسارات <?php echo $tourCount; ?>)</h4>
-</div>
+        <div class="container">
+            <h4 class="text-center">(عدد المسارات <?php echo $tourCount; ?>)</h4>
+        </div>
         <div class="row g-4 justify-content-center">
             <?php if (empty($tours)): ?>
                 <p class="text-center">لا توجد نتائج مطابقة.</p>
@@ -140,10 +116,11 @@ define('BASE_URL', 'http://localhost/trips/uploads/'); // استبدل `localhos
                                     <i class="fa fa-calendar-alt text-primary me-2"></i><?php echo htmlspecialchars($row['date']); ?>
                                 </small>
                                 <small class="flex-fill text-center py-2">
-                                <i class="fa fa-user text-primary me-2"></i>المرشد الرحلة   <?php echo htmlspecialchars($row['guideName']); ?>
+                                    <i class="fa fa-user text-primary me-2"></i>المرشد الرحلة <?php echo htmlspecialchars($row['guideName']); ?>
                                 </small>
                             </div>
                             <div class="text-center p-4">
+                                <h1><?php echo htmlspecialchars($row['title']); ?></h1>
                                 <h3 class="mb-0">﷼<?php echo number_format($row['price'], 2); ?></h3>
                                 <div class="mb-3">
                                     <small class="fa fa-star text-primary"></small>
@@ -165,7 +142,6 @@ define('BASE_URL', 'http://localhost/trips/uploads/'); // استبدل `localhos
         </div>
     </div>
 </div>
-
 
 <?php
 // Close the database connection

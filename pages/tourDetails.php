@@ -25,7 +25,7 @@ $placesStmt = $pdo->prepare("
 $placesStmt->execute(['tourId' => $tourId]);
 $places = $placesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-define('BASE_URL', 'http://localhost/trips/'); // استبدل `localhost/trips/uploads/` بمسار الصور الصحيح
+// استبدل `localhost/trips/uploads/` بمسار الصور الصحيح
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +45,9 @@ define('BASE_URL', 'http://localhost/trips/'); // استبدل `localhost/trips/
             <div class="col-lg-7">
                 <?php if ($tour): ?>
                     <div class="tour-img mb-4">
-                        <img class="img-fluid" src="<?php echo htmlspecialchars(BASE_URL . $tour['imageURL']); ?>" alt="Tour Image">
+                        
+                        <img class="img-fluid" src="/trips/uploads/<?php echo htmlspecialchars($tour['imageURL']); ?>" alt="Tour Image">
+
                     </div>
                     <h1 class="mb-3"><?php echo htmlspecialchars($tour['title']); ?></h1>
                     <p class="mb-4"><?php echo htmlspecialchars($tour['description']); ?></p>
@@ -92,7 +94,8 @@ define('BASE_URL', 'http://localhost/trips/'); // استبدل `localhost/trips/
                         <div class="col-6">
                             <div class="place-item">
                             <?php if (!empty($place['imageURL'])): ?>
-    <img class="img-fluid" src="<?php echo htmlspecialchars(BASE_URL . $place['imageURL']); ?>" alt="Place Image">
+                                
+    <img class="img-fluid" src="<?php echo htmlspecialchars($place['imageURL']); ?>" alt="Place Image">
 <?php else: ?>
     <p>الصورة غير متوفرة</p>
 

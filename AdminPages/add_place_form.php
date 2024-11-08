@@ -35,7 +35,7 @@ if (isset($_POST['addPlace'])) {
     if (!empty($_FILES['placeImages']['name'][0])) {
         foreach ($_FILES['placeImages']['tmp_name'] as $index => $tmpName) {
             $imageName = basename($_FILES['placeImages']['name'][$index]);
-            $path='uploads'.$imageName;
+            $path='uploads/'.$imageName;
             $imagePath = '../uploads/' . $imageName;
 
             // نقل الملف إلى مجلد التحميلات

@@ -119,6 +119,12 @@ switch($page) {
     case 'Discover':
         include('pages/Discover.php');
         break;
+    // csse 'placeDetails':
+    //     include ('pages/placeDetails.php');
+    //     break;
+    case 'placeDetails':
+        include('pages/placeDetails.php');
+        break;
         case 'details':
             include('GuidePages/details.php');
     case 'home':
