@@ -105,7 +105,7 @@ define('BASE_URL', 'http://localhost/trips/uploads/'); // استبدل `localhos
                         <div class="package-item">
                             <div class="overflow-hidden">
                                 <a href="index.php?page=tourDetails&tourId=<?php echo $row['tourId']; ?>">
-                                    <img class="img-fluid" src="<?php echo htmlspecialchars(BASE_URL . $row['imageURL']); ?>" alt="Package Image">
+                                    <img class="img-fluid" style="width: 100%;" src="<?php echo htmlspecialchars($row['imageURL']); ?>" alt="Package Image">
                                 </a>
                             </div>
                             <div class="d-flex border-bottom">

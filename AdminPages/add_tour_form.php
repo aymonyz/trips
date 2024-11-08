@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $imagePath = null;
     if (!empty($_FILES['tourImage']['name'])) {
         $imagePath = "../uploads/" . basename($_FILES['tourImage']['name']);
+        $path = "uploads/" . basename($_FILES['tourImage']['name']);
         if (!move_uploaded_file($_FILES['tourImage']['tmp_name'], $imagePath)) {
             echo "Done!!";
             exit();
@@ -69,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             INSERT INTO tour (guideId, location, date, price, imageURL, description, city, duration, title) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $insertQuery->execute([$guideId, $location, $date, $price, $imagePath, $description, $city, $duration, $title]);
+        $insertQuery->execute([$guideId, $location, $date, $price, $path, $description, $city, $duration, $title]);
 
         // Get the last inserted tour ID for the new tour
         $tourId = $pdo->lastInsertId();

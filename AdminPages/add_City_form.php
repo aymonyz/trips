@@ -6,6 +6,9 @@ error_reporting(E_ALL);
 include '../db.php'; // تضمين الاتصال بقاعدة البيانات
 include 'index.php'; 
 
+if (isset($_GET['guideId'])) {
+  $guideId = $_GET['guideId'];
+}
 if (isset($_GET['removeCity'])) {
     $cityId = $_GET['removeCity'];
     try {
@@ -81,7 +84,7 @@ if (isset($_POST['addCity'])) {
 }
 
 // استرجاع جميع المدن لعرضها في الجدول
-$cityQuery = $pdo->query("SELECT * FROM cities");
+$cityQuery = $pdo->query("SELECT * FROM cities where");
 $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>

@@ -60,6 +60,7 @@ session_start(); // Only here, at the top of the main file
 // Before accessing $_SESSION['role'], check if it exists
 if (isset($_SESSION['role'])) {
     $role = $_SESSION['role'];
+    $id=$_SESSION["userId"] ;
 } else {
     // If the role is not set, you can define a default value or handle it as needed
     $role = 'guest'; // Default role or redirect to login

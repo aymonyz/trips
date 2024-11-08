@@ -5,6 +5,8 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 if (isset($_SESSION['role'])) {
     $role = $_SESSION['role'];
+    
+    $id=$_SESSION["userId"] ;
 } else {
     // If the role is not set, you can define a default value or handle it as needed
     $role = 'guest'; // Default role or redirect to login
@@ -111,7 +113,7 @@ if ($page == 'home') {
                     <a href="admin.php" class="nav-item nav-link" style="color: white;">المدير</a>
                 <?php endif; ?>
                 <?php if ($role == 'guide'): ?>
-                    <a href="guide.php?form=addPlace" class="nav-item nav-link" style="color: white;">اقتراح مكان </a>
+                    <a href="add_suggest_form.php?guideId=<?= $id ?>" class="nav-item nav-link" style="color: white;">اقتراح مكان </a>
                 <?php endif; ?>       
         
         </div>

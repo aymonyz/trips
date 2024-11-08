@@ -45,8 +45,11 @@ $places = $placesStmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="col-lg-7">
                 <?php if ($tour): ?>
                     <div class="tour-img mb-4">
+
                         
-                        <img class="img-fluid" src="/trips/uploads/<?php echo htmlspecialchars($tour['imageURL']); ?>" alt="Tour Image">
+
+
+                        <img class="img-fluid" src="<?php echo htmlspecialchars( $tour['imageURL']); ?>" alt="Tour Image">
 
                     </div>
                     <h1 class="mb-3"><?php echo htmlspecialchars($tour['title']); ?></h1>
@@ -94,8 +97,12 @@ $places = $placesStmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="col-6">
                             <div class="place-item">
                             <?php if (!empty($place['imageURL'])): ?>
+
                                 
     <img class="img-fluid" src="<?php echo htmlspecialchars($place['imageURL']); ?>" alt="Place Image">
+
+    
+
 <?php else: ?>
     <p>الصورة غير متوفرة</p>
 

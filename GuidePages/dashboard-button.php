@@ -9,6 +9,8 @@ if (!isset($_SESSION['userId'])) {
     header("Location: ../index.php?=home");
     exit();
 }
+$guideId = $_SESSION["userId"];
+$role= $_SESSION["role"];
 ?>
 
 <!DOCTYPE html>
@@ -68,7 +70,8 @@ if (!isset($_SESSION['userId'])) {
         <a href="profile.php">تعديل الملف الشخصي</a>
     </div>
     <div class="dashboard-button">
-        <a href="requests.php">طلباتي</a>
+        <?php
+        echo '<a href="requests.php?guideId=' . $guideId . '">طلباتي</a>';?>
     </div>
    </div>
    <div class="bottom">
@@ -76,9 +79,11 @@ if (!isset($_SESSION['userId'])) {
    <div class="dashboard-button">
         <a href="change_password.php">تعديل كلمة المرور</a>
     </div>
-    <!-- <div class="dashboard-button">
-        <a href="become_guide.php">أريد أن أصبح المرشد</a>
-    </div> -->
+    <div class="dashboard-button">
+    <?php
+echo '<a href="add_tour_form.php?guideId=' . $guideId . '">المسارات</a>';
+?>
+</div>
    </div>
 </div>
 <?php include '../footer.php'; ?>

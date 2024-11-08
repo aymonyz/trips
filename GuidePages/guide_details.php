@@ -11,6 +11,9 @@ if (!isset($_GET['guideId'])) {
 
 // Get the guideId from the URL
 $guideId = $_GET['guideId'];
+$languagesCount = $_GET['languagesCount'];
+$tourCount = $_GET['tourCount'];
+$placeCount = $_GET['placeCount'];
 
 // Fetch the guide's details from the database
 $query = $pdo->prepare("SELECT * FROM tourguide WHERE guideId = ?");
@@ -25,6 +28,8 @@ if (!$guide) {
 
 <!DOCTYPE html>
 <html lang="ar">
+
+
 <head>
     <meta charset="UTF-8">
     <title>تفاصيل المرشد</title>
@@ -217,7 +222,7 @@ if (!$guide) {
                                 </div>
                                 <div class="bulid-text">
                                     <span class="text-muted">عدد المسارات</span>
-                                    <span>0</span>
+                                    <span><?php echo $tourCount?></span>
                                 </div>
                             </div>
                             <div class="items">
@@ -226,7 +231,7 @@ if (!$guide) {
                                 </div>
                                 <div class="bulid-text">
                                     <span class="text-muted">عدد الاماكن</span>
-                                    <span>0</span>
+                                    <span><?php echo $placeCount ?></span>
                                 </div>
                             </div>
                             <div class="items">
@@ -235,7 +240,7 @@ if (!$guide) {
                                 </div>
                                 <div class="bulid-text">
                                     <span class="text-muted">عدد اللغات</span>
-                                    <span>12</span>
+                                    <span><?php echo $languagesCount?></span>
                                 </div>
                             </div>
                         </div>
@@ -246,9 +251,10 @@ if (!$guide) {
                     <div class="col-md-3">
                         <h3 class="fw-bolder  mb-4" style="text-align: center; color:#000">حسابات التواصل</h3>
                         <div class="d-flex flex-column">
-                            <a href="https://twitter.com/" class="social-link tw"><i class="fa-brands fa-twitter"></i></a>
-                            <a href="https://facebook.com/" class="social-link  fb"><i class="fa-brands fa-facebook"></i></a>
-                            <a href="https://www.instagram.com/" class="social-link in"><i class="fa-brands fa-instagram"></i></a>
+                        
+                            <a href="<?php echo $guide['twitter']?>" class="social-link tw"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="<?php echo $guide['facebook']?>" class="social-link  fb"><i class="fa-brands fa-facebook"></i></a>
+                            <a href="<?php echo $guide['instagram']?>" class="social-link in"><i class="fa-brands fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>

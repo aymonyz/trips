@@ -83,6 +83,7 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
         
 
         <div class="row g-4 justify-content-center">
+
     <?php foreach ($places as $place): ?>
         <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
             <div class="package-item">
@@ -90,6 +91,24 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
                     <div class="overflow-hidden">
                         <!-- عرض صورة المكان باستخدام المسار المخزن في قاعدة البيانات -->
                         <img class="img-fluid" src="/trips/<?php echo htmlspecialchars($place['placeImage']); ?>" alt="Place Image">
+
+            <?php foreach ($places as $place): ?>
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="package-item">
+                        <div class="overflow-hidden">
+                        <img class=" " style="width: 100%;" src="/trips/<?php echo $cityImage; ?>" alt="City Image">
+                     
+                        </div>
+                        <div class="d-flex border-bottom">
+                            <small class="flex-fill text-center border-end py-2">
+                                <i class="fa fa-map-marker-alt text-primary me-2"></i><?php echo htmlspecialchars($place['cityName']); ?>
+                            </small>
+                        </div>
+                        <div class="text-center p-4">
+                            <h3 class="mb-0"><?php echo htmlspecialchars($place['name']); ?></h3>
+                            <p><?php echo htmlspecialchars($place['description']); ?></p>
+                        </div>
+
                     </div>
                     <div class="d-flex border-bottom">
                         <small class="flex-fill text-center border-end py-2">
