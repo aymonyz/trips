@@ -84,7 +84,7 @@ if (isset($_POST['addCity'])) {
 }
 
 // استرجاع جميع المدن لعرضها في الجدول
-$cityQuery = $pdo->query("SELECT * FROM cities where");
+$cityQuery = $pdo->query("SELECT * FROM cities ");
 $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>

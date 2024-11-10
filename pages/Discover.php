@@ -16,7 +16,7 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
         FROM Place p
         LEFT JOIN Cities c ON p.CityId = c.CityId 
         WHERE c.Name LIKE :city 
-        AND (p.PlaceId NOT IN (SELECT s.placeId FROM suggestedplaces s) OR p.Approve = 1)"; 
+        AND (p.PlaceId NOT IN (SELECT s.placeId FROM suggestedplaces s) AND p.Approve = 1)"; 
     
     $params[':city'] = '%' . $city . '%'; // Wildcard search for the city name
     
@@ -36,7 +36,7 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
             FROM Place p
             LEFT JOIN Cities c ON p.CityId = c.CityId
             WHERE p.PlaceId NOT IN (SELECT s.placeId FROM suggestedplaces s) 
-        OR p.Approve = 1";
+        AND p.Approve = 1";
     
     // Prepare and execute the query without filtering by city
     $stmt = $pdo->prepare($sql);
@@ -87,7 +87,7 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
                 <div class="package-item">
                     <a href="/trips/pages/placeDetails.php?placeId=<?php echo htmlspecialchars($place['placeId']); ?>" style="text-decoration: none; color: inherit;">
                         <div class="overflow-hidden">
-                            <img class="img-fluid" src="/trips/<?php echo htmlspecialchars($place['placeImage']); ?>" alt="Place Image">
+                            <img class="img-fluid"  style="width: 100%;"src="/trips/<?php echo htmlspecialchars($place['placeImage']); ?>" alt="Place Image">
                         </div>
                         <div class="d-flex border-bottom">
                             <small class="flex-fill text-center border-end py-2">

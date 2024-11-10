@@ -8,6 +8,10 @@ if (!isset($_GET['guideId'])) {
     echo "Guide ID not specified.";
     exit();
 }
+if (!isset($_SESSION['userId'])) {
+    header("Location: ../index.php?=home");
+    exit();
+}
 
 // Get the guideId from the URL
 $guideId = $_GET['guideId'];
@@ -24,12 +28,30 @@ if (!$guide) {
     echo "Guide not found.";
     exit();
 }
+
+// Handle new review submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_review'])) {
+    if (!isset($_SESSION['userId'])) {
+        header("Location: ../index.php?page=login");
+        exit();
+    }
+    $rating = $_POST['rating'];
+    $comment = $_POST['comment'];
+    $userId = $_SESSION['userId']; // assuming user is logged in and session contains user_id
+
+    // Insert review into database
+    $stmt = $pdo->prepare("INSERT INTO review (userId, guideId, rating, comment, created_at) VALUES (?, ?, ?, ?, NOW())");
+    $stmt->execute([$userId, $guideId, $rating, $comment]);
+}
+
+// Fetch reviews for the guide
+$reviewsQuery = $pdo->prepare("SELECT * FROM review WHERE guideId = ? ORDER BY created_at DESC");
+$reviewsQuery->execute([$guideId]);
+$reviews = $reviewsQuery->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
 <html lang="ar">
-
-
 <head>
     <meta charset="UTF-8">
     <title>تفاصيل المرشد</title>
@@ -194,19 +216,22 @@ if (!$guide) {
     line-height: 1.5;
     font-weight: bold;
 }
+.rating-stars {
+    color: #FFD700;
+}
     </style>
 </head>
 <body>
 
 <?php include '../base_nav.php'; ?>
 
-<div class="container-xxl py-5 ">
+<div class="container-xxl py-5">
     <div class="containerr">
 
         <div class="row g-8">
             <div class="col-lg-12 col-md-6 wow fadeInUp new" data-wow-delay="0.1s">
                 <h3 class="ss">تفاصيل المرشد السياحي</h3>
-                <div class="team-item d-flex align-items-start  style">
+                <div class="team-item d-flex align-items-start style">
                     <!-- Image Section -->
                     <div class="team-img mrg">
                         <img class="img-fluid rounded-circle" src="<?php echo '../'.$guide['imageURL']; ?>" alt="Guide Image" width="96" height="96">
@@ -246,27 +271,99 @@ if (!$guide) {
                         </div>
                         <p class="mb-2 lang"><?php echo $guide['languages']; ?></p>
                         <p class="Describe mb-2"><?php echo $guide['about']; ?></p>
-                        <!-- <a href="GuidePages/guide_details.php?guideId=<?php echo $guide['guideId']; ?>" class="btnn"> طلب مسار خاص  </a> -->
                     </div>
                     <div class="col-md-3">
                         <h3 class="fw-bolder  mb-4" style="text-align: center; color:#000">حسابات التواصل</h3>
                         <div class="d-flex flex-column">
-                        
                             <a href="<?php echo $guide['twitter']?>" class="social-link tw"><i class="fa-brands fa-twitter"></i></a>
-                            <a href="<?php echo $guide['facebook']?>" class="social-link  fb"><i class="fa-brands fa-facebook"></i></a>
+                            <a href="<?php echo $guide['facebook']?>" class="social-link fb"><i class="fa-brands fa-facebook"></i></a>
                             <a href="<?php echo $guide['instagram']?>" class="social-link in"><i class="fa-brands fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>
-                
             </div>
         </div>
-   
+
+        <!-- Form for adding a new review -->
+        <div class="mt-4" style="text-align: right;">
+            <h4>إضافة تقييم وتعليق</h4>
+            <form action="" method="POST">
+                <div class="form-group">
+                    <label for="rating">التقييم:</label>
+                    <select name="rating" id="rating" class="form-control" required>
+                        <option value="5">5 - ممتاز</option>
+                        <option value="4">4 - جيد جداً</option>
+                        <option value="3">3 - جيد</option>
+                        <option value="2">2 - مقبول</option>
+                        <option value="1">1 - ضعيف</option>
+                    </select>
+                </div>
+                <div class="form-group mt-3">
+                    <label for="comment">التعليق:</label>
+                    <textarea name="comment" id="comment" class="form-control" rows="4" required></textarea>
+                </div>
+                <button type="submit" name="submit_review" class="btn btn-primary mt-3">إرسال</button>
+            </form>
+        </div>
+
+        <!-- Displaying reviews -->
+        <div class="mt-5" style="text-align: right;">
+    <h4>التعليقات والتقييمات</h4>
+    <?php if ($reviews): ?>
+        <?php 
+        // أولاً نعرض أول 10 تعليقات فقط
+        $totalReviews = count($reviews);
+        $showLimit = 10;
+        ?>
+        
+        <div id="reviewContainer">
+            <?php foreach ($reviews as $index => $review): ?>
+                <div class="card mb-3 review-card" style="<?php echo ($index >= $showLimit) ? 'display: none;' : ''; ?>">
+                    <div class="card-body">
+                        <h5 class="card-title">التقييم: <span style="color:gold;"><?php echo str_repeat('&#9733;', $review['rating']); ?> / 5</span></h5>
+                        <p class="card-text"><?php echo htmlspecialchars($review['comment']); ?></p>
+                        <p class="text-muted">تاريخ الإضافة: <?php echo htmlspecialchars($review['created_at']); ?></p>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <?php if ($totalReviews > $showLimit): ?>
+            <button id="loadMore" class="btn btn-primary">عرض المزيد</button>
+        <?php endif; ?>
+        
+    <?php else: ?>
+        <p>لا توجد تعليقات بعد.</p>
+    <?php endif; ?>
+</div>
+
+<script>
+// جافاسكريبت لعرض المزيد من التعليقات عند الضغط على الزر
+document.getElementById("loadMore").addEventListener("click", function() {
+    // جلب جميع التعليقات
+    let hiddenReviews = document.querySelectorAll(".review-card[style*='display: none;']");
+    
+    // عدد التعليقات التي سيتم عرضها دفعة واحدة
+    let loadCount = 10;
+    
+    for (let i = 0; i < loadCount; i++) {
+        if (hiddenReviews[i]) {
+            hiddenReviews[i].style.display = "block";
+        }
+    }
+
+    // إذا لم يبقى تعليقات مخفية، قم بإخفاء الزر
+    if (document.querySelectorAll(".review-card[style*='display: none;']").length === 0) {
+        document.getElementById("loadMore").style.display = "none";
+    }
+});
+</script>
+
 
     </div>
 </div>
 
-<?php include '../footer.php'; ?>
+
 
 </body>
 </html>
