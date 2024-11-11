@@ -116,7 +116,7 @@ while ($row = $languageQuery->fetch(PDO::FETCH_ASSOC)) {
 $languagesList = array_unique($languagesList); // إزالة التكرارات
 ?>
 
-?>
+
 </head>
 <div class="container-xxl py-5">
     <div class="container">

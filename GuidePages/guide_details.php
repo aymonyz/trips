@@ -1,3 +1,18 @@
+
+<?php
+// Start the session to use session variables
+session_start();
+
+// فرضاً أن userId تم تخزينه في الجلسة بعد تسجيل دخول المستخدم
+if (isset($_SESSION['userId'])) {
+    $userId = $_SESSION['userId'];
+} else {
+    echo "User ID غير متوفر.";
+    exit();
+}
+?>
+
+
 <?php
 // Start the session
 session_start();
@@ -268,6 +283,7 @@ $reviews = $reviewsQuery->fetchAll(PDO::FETCH_ASSOC);
                                     <span><?php echo $languagesCount?></span>
                                 </div>
                             </div>
+                            
                         </div>
                         <p class="mb-2 lang"><?php echo $guide['languages']; ?></p>
                         <p class="Describe mb-2"><?php echo $guide['about']; ?></p>
@@ -281,6 +297,29 @@ $reviews = $reviewsQuery->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
                 </div>
+                <a href="add_masar.php?userId=<?php echo $userId; ?>" class="btn custom-masar-btn">طلب مسار خاص</a>
+
+<style>
+    /* تنسيقات الزر المخصص */
+    .custom-masar-btn {
+        float: right;
+        background-color: #333333; /* اللون الرمادي الداكن */
+        color: #ffffff; /* لون النص الأبيض */
+        border-radius: 5px; /* حواف مستديرة قليلاً */
+        padding: 10px 20px; /* مساحة داخلية للزر */
+        font-weight: bold; /* خط عريض */
+        text-align: center; /* محاذاة النص في الوسط */
+        display: inline-block; /* جعل الزر يبدو كعنصر كتلة */
+        border: none; /* إزالة الحدود الافتراضية */
+    }
+    /* تأثير التمرير */
+    .custom-masar-btn:hover {
+        background-color: #555555; /* لون أغمق عند تمرير الفأرة */
+        color: #ffffff; /* التأكد من أن النص يظل أبيض */
+        text-decoration: none; /* إزالة أي خط تحت النص عند التمرير */
+    }
+</style>
+
             </div>
         </div>
 
