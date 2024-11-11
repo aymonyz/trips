@@ -109,6 +109,7 @@
 $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
 $languageQuery = $pdo->query("SELECT DISTINCT languages FROM tourguide");
 $languagesList = [];
+
 while ($row = $languageQuery->fetch(PDO::FETCH_ASSOC)) {
     $row['languages'] = ltrim($row['languages'], ', ');
     $languages = explode(', ', $row['languages']);
@@ -149,6 +150,8 @@ $languagesList = array_unique($languagesList); // إزالة التكرارات
             <?php
             // Fetch guides from the database
             $stmt = $pdo->query("SELECT guideId, name, rating, imageURL, facebook, twitter, instagram, languages, about FROM tourguide");
+            
+
             while ($guide = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $id = $guide['guideId'];
                 $tourStmt = $pdo->prepare("SELECT * FROM tour WHERE guideId = ?");
@@ -163,6 +166,15 @@ $languagesList = array_unique($languagesList); // إزالة التكرارات
                 $languagesCount = count($languages) - 1;
 
             ?>
+            <?PHP
+                $ratingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM review WHERE guideId = ?");
+                $ratingStmt->execute([$id]);
+                $rating = $ratingStmt->fetchColumn();
+                $starRating = round($rating);; 
+                
+    
+            
+            ?>
             <div class="col-lg-10 col-md-6 wow fadeInUp new guide-item" data-wow-delay="0.1s"
                  data-name="<?= htmlspecialchars($guide['name']) ?>"
                  data-city="<?= htmlspecialchars($cityName ?? '') ?>"
@@ -173,6 +185,10 @@ $languagesList = array_unique($languagesList); // إزالة التكرارات
                     </div>
                     <div class="ms-4 shape" style=" ">
                         <h5 class="mb-4"><?php echo $guide['name']; ?></h5>
+                        <?php 
+    // عرض النجوم بناءً على التقييم
+                                echo str_repeat('⭐', $starRating); 
+                        ?>
                         <div class="style-mid">
                             <div class="items mb-2">
                                 <div class="bulid-icon">
@@ -203,8 +219,8 @@ $languagesList = array_unique($languagesList); // إزالة التكرارات
                             </div>
                         </div>
                         <p class="mb-2 lang"> <?php echo implode(', ', $languages); ?> </p>
-                        <!-- <p class="Describe mb-2"> <?php echo $guide['about'] ?></p> -->
-                        <a href="GuidePages/guide_details.php?guideId=<?php echo $guide['guideId']; ?>&languagesCount=<?php echo $languagesCount; ?>&tourCount=<?php echo $tourCount; ?>&placeCount=<?php echo $placeCount; ?>" class="button-details">المزيد من التفاصيل</a>
+                       
+                        <a href="GuidePages/guide_details.php?guideId=<?php echo $guide['guideId']; ?>&rating=<?php echo $starRating; ?>&languagesCount=<?php echo $languagesCount; ?>&tourCount=<?php echo $tourCount; ?>&placeCount=<?php echo $placeCount; ?>" class="button-details">المزيد من التفاصيل</a>
                     </div>
                 </div>
             </div>

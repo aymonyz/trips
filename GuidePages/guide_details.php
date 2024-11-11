@@ -18,6 +18,7 @@ $guideId = $_GET['guideId'];
 $languagesCount = $_GET['languagesCount'];
 $tourCount = $_GET['tourCount'];
 $placeCount = $_GET['placeCount'];
+$starRating = $_GET['rating'];
 
 // Fetch the guide's details from the database
 $query = $pdo->prepare("SELECT * FROM tourguide WHERE guideId = ?");
@@ -239,7 +240,13 @@ $reviews = $reviewsQuery->fetchAll(PDO::FETCH_ASSOC);
 
                     <!-- Guide Details -->
                     <div class="ms-4 shape">
-                        <h5 class="mb-4"><?php echo $guide['name']; ?></h5>
+                        <h5 class="mb-4"> <?php
+                        echo str_repeat('⭐', $starRating); 
+                        ?>
+                       </span><?php echo $guide['name']; ?> </h5>
+                     
+                      
+
                         <div class="style-mid">
                             <div class="items mb-2">
                                 <div class="bulid-icon">
