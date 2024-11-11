@@ -7,6 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // تشفير كلمة المرور
     $role = "guide"; 
+    $active=0;
 
     try {
         // التحقق من وجود البريد الإلكتروني في قاعدة البيانات
@@ -18,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo "هذا البريد الإلكتروني مسجل بالفعل. يرجى استخدام بريد إلكتروني آخر.";
         } else {
             // إدخال البيانات الأساسية إلى قاعدة البيانات
-            $query = $pdo->prepare("INSERT INTO user (name, emailAddress, password, role) VALUES (?, ?, ?, ?)");
-            $query->execute([$name, $email, $password, $role]);
+            $query = $pdo->prepare("INSERT INTO user (name, emailAddress, password, role,active) VALUES (?, ?, ?, ?,?)");
+            $query->execute([$name, $email, $password, $role,$active]);
 
             // الحصول على معرّف المرشد الجديد
             $userId = $pdo->lastInsertId();

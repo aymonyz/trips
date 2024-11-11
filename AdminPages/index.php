@@ -74,13 +74,14 @@
     <!-- شريط التنقل -->
     <div class="navbar">
         <a href="add_City_form.php" class="active">إضافة مدينة</a>
-        <a href="add_guide_form.php">إضافة مشرف</a>
+        <a href="add_guide_form.php"> المرشدين</a>
         <a href="add_place_form.php">إضافة مكان</a>
         <a href="add_tour_form.php">الرحلات</a>
         <a href="getBooking.php">أدلة السفر</a>
         <a href="getMessage.php">اتصل بنا</a>
         <a href="GetSuggested.php">xاقتراحات</a>
         <a href="../index.php">الرجوع للموقع</a>
+
     </div>
 
 </body>
