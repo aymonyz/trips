@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         echo "تم حفظ البيانات بنجاح!";
         // إعادة توجيه المستخدم إلى صفحة النجاح أو الرئيسية بعد حفظ البيانات
-        header("Location: main.php");
+        header("Location: ../index.php?page=login");
         exit();
     } catch (PDOException $e) {
         echo "حدث خطأ أثناء حفظ البيانات: " . $e->getMessage();

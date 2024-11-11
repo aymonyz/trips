@@ -31,17 +31,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // توجيه المستخدم بناءً على الدور
             if ($user['role'] === 'admin') {
-
                 header("Location: AdminPages/index.php");
-
-                header("Location: AdminPages");
-
+                exit();
             } elseif ($user['role'] === 'guide') {
-                header("Location: GuidePages/dashboard-button.php");
+                if ($user['active'] == 1) {
+                    header("Location: GuidePages/dashboard-button.php");
+                    exit();
+                } else {
+                    $error = "حسابك غير مفعل.";
+                }
             } else {
                 header("Location: index.php?page=home");
+                exit();
             }
-            exit();
         } else {
             // إذا كانت كلمة المرور غير صحيحة
             $error = "كلمة المرور غير صحيحة.";
@@ -51,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = "لا يوجد مستخدم مسجل بهذا البريد الإلكتروني.";
     }
 }
-
 ?>
 
 <!DOCTYPE html>

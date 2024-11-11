@@ -110,8 +110,9 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
 $languageQuery = $pdo->query("SELECT DISTINCT languages FROM tourguide");
 $languagesList = [];
 while ($row = $languageQuery->fetch(PDO::FETCH_ASSOC)) {
-    $languages = explode(', ', $row['languages']); // تقسيم النص إلى مصفوفة باستخدام الفاصلة
-    $languagesList = array_merge($languagesList, $languages); // دمج اللغات مع القائمة النهائية
+    $row['languages'] = ltrim($row['languages'], ', ');
+    $languages = explode(', ', $row['languages']);
+    $languagesList = array_merge($languagesList, $languages);
 }
 $languagesList = array_unique($languagesList); // إزالة التكرارات
 ?>
@@ -158,8 +159,9 @@ $languagesList = array_unique($languagesList); // إزالة التكرارات
                 $tours = $tourStmt->fetchAll(PDO::FETCH_ASSOC); 
                 $tourCount = count($tours);
                 $placeCount = count($place);
-                $languages = explode(', ', $guide['languages']);
-                $languagesCount = count($languages);
+                $languages = explode(', ', ltrim($guide['languages'], ', '));
+                $languagesCount = count($languages) - 1;
+
             ?>
             <div class="col-lg-10 col-md-6 wow fadeInUp new guide-item" data-wow-delay="0.1s"
                  data-name="<?= htmlspecialchars($guide['name']) ?>"

@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT);  // Hash the password
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO user (name, emailAddress, password, role) VALUES (?, ?, ?, 'user')");
+        $stmt = $pdo->prepare("INSERT INTO user (name, emailAddress, password, role,active) VALUES (?, ?, ?, 'user','1')");
         if ($stmt->execute([$name, $email, $password])) {
             echo "Registration successful!";
         } else {
