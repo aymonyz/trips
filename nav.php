@@ -78,7 +78,7 @@ if ($page == 'home') {
             <a href="index.php?page=team" class="nav-item nav-link <?= $page == 'team' ? 'active' : '' ?>">المرشدين </a>
             <a href="index.php?page=contact" class="nav-item nav-link <?= $page == 'contact' ? 'active' : '' ?>">تواصل معانا </a>
             <?php if ($role == 'admin'): ?>
-                    <a href="admin.php" class="nav-item nav-link">المدير</a>
+                    <a href="AdminPages/index.php" class="nav-item nav-link">المدير</a>
                 <?php endif; ?>
                 <?php if ($role == 'guide'): ?>
                     <a href="GuidePages/add_suggest_form.php?guideId=<?= $id ?>" class="nav-item nav-link">اقتراح مكان</a>

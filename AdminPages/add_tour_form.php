@@ -40,6 +40,61 @@ $toursStmt = $pdo->query("SELECT t.tourId, t.title, t.location, t.date, t.price,
     FROM Tour t JOIN TourGuide g ON t.guideId = g.guideId");
 $tours = $toursStmt->fetchAll(PDO::FETCH_ASSOC) ?: []; // Ensure $tours is an array
 
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     $guideId = $_POST['guideId'];
+//     $location = $_POST['location'];
+//     $date = $_POST['date'];
+//     $price = $_POST['price'];
+//     $title = $_POST['title'];
+//     $description = $_POST['description'];
+//     $city = $_POST['city'];
+//     $duration = $_POST['duration'];
+//     $places = $_POST['places'] ?? [];
+
+//     // Handle file upload only if an image is provided
+//     $imagePath = null;
+//     if (!empty($_FILES['tourImage']['name'])) {
+//         $imagePath = "../uploads/" . basename($_FILES['tourImage']['name']);
+//         $path = "uploads/" . basename($_FILES['tourImage']['name']);
+//         if (!move_uploaded_file($_FILES['tourImage']['tmp_name'], $imagePath)) {
+//             echo "Done!!";
+//             exit();
+//         }
+//     }
+
+//     try {
+//         $pdo->beginTransaction();
+
+//         // Insert tour with image path (if available)
+//         $insertQuery = $pdo->prepare("
+//             INSERT INTO tour (guideId, location, date, price, imageURL, description, city, duration, title) 
+//             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+//         ");
+//         $insertQuery->execute([$guideId, $location, $date, $price, $path, $description, $city, $duration, $title]);
+
+//         // Get the last inserted tour ID for the new tour
+//         $tourId = $pdo->lastInsertId();
+
+//         // Insert selected places if any are provided
+//         if (!empty($places)) {
+//             $stmtPlaces = $pdo->prepare("INSERT INTO Tour_Places (tourId, placeId) VALUES (?, ?)");
+//             foreach ($places as $placeId) {
+//                 $stmtPlaces->execute([$tourId, $placeId]);
+//             }
+//         }
+        
+
+//         $pdo->commit();
+//         echo "Tour and associated places added successfully!";
+//     } catch (PDOException $e) {
+//         $pdo->rollBack();
+//         echo "Error adding the tour: " . htmlspecialchars($e->getMessage());
+//     }
+
+//     // Redirect to avoid re-triggering the insertion on page refresh
+//     header("Location: add_tour_form.php?form=addTour");
+//     exit();
+// }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $guideId = $_POST['guideId'];
     $location = $_POST['location'];
@@ -49,9 +104,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = $_POST['description'];
     $city = $_POST['city'];
     $duration = $_POST['duration'];
+    $placeCategory = $_POST['placeCategory'];
+    $startDate = $_POST['startDate'];
+    $endDate = $_POST['endDate'];
     $places = $_POST['places'] ?? [];
 
-    // Handle file upload only if an image is provided
+    // Handle file upload
     $imagePath = null;
     if (!empty($_FILES['tourImage']['name'])) {
         $imagePath = "../uploads/" . basename($_FILES['tourImage']['name']);
@@ -65,24 +123,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo->beginTransaction();
 
-        // Insert tour with image path (if available)
+        // Insert tour with the new fields
         $insertQuery = $pdo->prepare("
-            INSERT INTO tour (guideId, location, date, price, imageURL, description, city, duration, title) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO tour (guideId, location, date, price, imageURL, description, city, duration, title, placeCategory, startDate, endDate) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $insertQuery->execute([$guideId, $location, $date, $price, $path, $description, $city, $duration, $title]);
+        $insertQuery->execute([$guideId, $location, $date, $price, $path, $description, $city, $duration, $title, $placeCategory, $startDate, $endDate]);
 
-        // Get the last inserted tour ID for the new tour
+        // Rest of the code for handling places
         $tourId = $pdo->lastInsertId();
-
-        // Insert selected places if any are provided
         if (!empty($places)) {
             $stmtPlaces = $pdo->prepare("INSERT INTO Tour_Places (tourId, placeId) VALUES (?, ?)");
             foreach ($places as $placeId) {
                 $stmtPlaces->execute([$tourId, $placeId]);
             }
         }
-        
 
         $pdo->commit();
         echo "Tour and associated places added successfully!";
@@ -91,10 +146,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Error adding the tour: " . htmlspecialchars($e->getMessage());
     }
 
-    // Redirect to avoid re-triggering the insertion on page refresh
     header("Location: add_tour_form.php?form=addTour");
     exit();
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -183,6 +238,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="date" class="form-label">التاريخ</label>
             <input type="date" class="form-control" id="date" name="date" required>
         </div>
+        <div class="mb-3">
+    <label for="placeCategory" class="form-label">تصنيف المكان</label>
+    <input type="text" class="form-control" id="placeCategory" name="placeCategory" required>
+</div>
+
+<div class="mb-3">
+    <label for="startDate" class="form-label">تاريخ من</label>
+    <input type="date" class="form-control" id="startDate" name="startDate" required>
+</div>
+
+<div class="mb-3">
+    <label for="endDate" class="form-label">تاريخ إلى</label>
+    <input type="date" class="form-control" id="endDate" name="endDate" required>
+</div>
+
         
         <div class="mb-3">
             <label for="price" class="form-label">السعر</label>
@@ -214,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="file" class="form-control" id="tourImage" name="tourImage" accept="image/*">
         </div>
         <div class="mb-3">
-    <label class="form-label">اختر الأماكن (يمكنك اختيار 3 أماكن كحد أقصى)</label>
+    <label class="form-label">اختر الأماكن (يمكنك اختيار 7 أماكن كحد أقصى)</label>
     <div>
         <?php foreach ($places as $place): ?>
             <div class="form-check">
@@ -265,7 +335,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const maxOptions = 3; // حدد الحد الأقصى هنا
+        const maxOptions = 7; // حدد الحد الأقصى هنا
         const checkboxes = document.querySelectorAll('input[name="places[]"]');
 
         checkboxes.forEach(function(checkbox) {
