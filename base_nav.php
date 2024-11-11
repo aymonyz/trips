@@ -118,9 +118,15 @@ if ($page == 'home') {
         
         </div>
         <?php if (isset($_SESSION['userId'])): ?>
+            <?php if ($_SESSION['role'] == 'user'): ?>
+                    <a href="../index.php?page=profile" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
+                    <a href="../index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
+            <?php endif; ?>
             <!-- Show Profile and Logout if logged in -->
-            <a href="dashboard-button.php" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
-            <a href="../index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
+            <?php if ($_SESSION['role'] == 'guide'): ?>
+                <a href="dashboard-button.php" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
+                <a href="../index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>            <?php endif; ?>
+           
         <?php else: ?>
             <!-- Show Register if not logged in -->        <?php endif; ?>
     </div>
