@@ -4,6 +4,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 if (isset($_SESSION['role'])) {
     $role = $_SESSION['role'];
+    $id=$_SESSION["userId"] ;
 } else {
     // If the role is not set, you can define a default value or handle it as needed
     $role = 'guest'; // Default role or redirect to login
@@ -77,16 +78,16 @@ if ($page == 'home') {
             <a href="index.php?page=team" class="nav-item nav-link <?= $page == 'team' ? 'active' : '' ?>">المرشدين </a>
             <a href="index.php?page=contact" class="nav-item nav-link <?= $page == 'contact' ? 'active' : '' ?>">تواصل معانا </a>
             <?php if ($role == 'admin'): ?>
-                    <a href="admin.php" class="nav-item nav-link">المدير</a>
+                    <a href="AdminPages/index.php" class="nav-item nav-link">المدير</a>
                 <?php endif; ?>
                 <?php if ($role == 'guide'): ?>
-                    <a href="guide.php?form=addPlace" class="nav-item nav-link">اقتراح مكان </a>
-                <?php endif; ?>
+                    <a href="GuidePages/add_suggest_form.php?guideId=<?= $id ?>" class="nav-item nav-link">اقتراح مكان</a>
+                    <?php endif; ?>
         </div>
         <?php if (isset($_SESSION['userId'])): ?>
     <!-- Show Profile and Logout if logged in -->
     <?php if ($_SESSION['role'] == 'guide'): ?>
-        <a href="GuidePages/profile.php" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
+        <a href="GuidePages/dashboard-button.php" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
     <?php elseif ($_SESSION['role'] == 'user'): ?>
         <a href="index.php?page=profile" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
     <?php endif; ?>

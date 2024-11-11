@@ -20,6 +20,7 @@ if ($tourId) {
     $tourQuery = $pdo->prepare("SELECT * FROM Tour WHERE tourId = ?");
     $tourQuery->execute([$tourId]);
     $tour = $tourQuery->fetch(PDO::FETCH_ASSOC);
+    $guideId=$tour['guideId'];
 } else {
     echo "Tour not found.";
     exit;
@@ -30,8 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $date = $_POST['date'];
     $specialRequest = $_POST['specialRequest'];
 
-    $bookingQuery = $pdo->prepare("INSERT INTO Booking (userId, tourId, bookingDate, specialRequest) VALUES (?, ?, ?, ?)");
-    $bookingQuery->execute([$userId, $tourId, $date, $specialRequest]);
+    $bookingQuery = $pdo->prepare("INSERT INTO Booking (userId, tourId, bookingDate, specialRequest,guideId) VALUES (?, ?, ?, ?,?)");
+    $bookingQuery->execute([$userId, $tourId, $date, $specialRequest,$guideId]);
 
     echo "Booking confirmed!";
     exit;

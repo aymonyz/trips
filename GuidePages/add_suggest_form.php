@@ -1,21 +1,69 @@
 <?php
-include 'db.php'; // Include your database connection
+include '../db.php'; // Include your database connection
+session_start(); 
+if (!isset($_SESSION['userId'])) {
+  header("Location: ../index.php?=home");
+  exit();
+}
+$role = 'guide';
 
-// // Retrieve all places
-// $placeQuery = $pdo->query("SELECT * FROM place");
-// $places = $placeQuery->fetchAll(PDO::FETCH_ASSOC);
+$guideId = $_GET['guideId']; // Ensure guideId is passed in the URL
 
-// Retrieve all places with their corresponding city names
-$placeQuery = $pdo->query("
-    SELECT p.placeId, p.name, p.description, c.Name AS cityName
+// Fetch places for the specific guide
+$placeQuery = $pdo->prepare("
+    SELECT p.placeId, p.name, p.description, c.Name AS cityName ,p.Approve
     FROM Place p
     LEFT JOIN Cities c ON p.CityId = c.CityId
+    WHERE p.guideId = ?
 ");
+$placeQuery->execute([$guideId]);
 $places = $placeQuery->fetchAll(PDO::FETCH_ASSOC);
 
 // Retrieve all cities for the select dropdown
 $cityQuery = $pdo->query("SELECT * FROM Cities");
 $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
+
+// Add place if form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addSuggest'])) {
+    $placeName = $_POST['placeName'];
+    $placeDescription = $_POST['placeDescription'];
+    $cityId = $_POST['cityId'];
+
+    // Image upload handling
+    $imagePath = null;
+    if (!empty($_FILES['placeImage']['name'])) {
+        $imagePath = "../uploads/" . basename($_FILES['placeImage']['name']);
+        $path="uploads/". basename($_FILES['placeImage']['name']);
+        if (!move_uploaded_file($_FILES['placeImage']['tmp_name'], $imagePath)) {
+            echo "Failed to upload image!";
+            exit();
+        }
+    }
+
+    // Insert new place into the database
+    $insertPlace = $pdo->prepare("
+        INSERT INTO Place (guideId, name, description, CityId, imageURL) 
+        VALUES (?, ?, ?, ?, ?)
+    ");
+    $insertPlace->execute([$guideId, $placeName, $placeDescription, $cityId, $path]);
+
+    // Reload the page to reflect the new place in the table
+    header("Location: add_suggest_form.php?guideId=" . $guideId);
+    exit();
+}
+
+// Handle place deletion
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletePlace'])) {
+    $placeId = $_POST['placeId'];
+
+    // Delete place from the database
+    $deleteQuery = $pdo->prepare("DELETE FROM Place WHERE placeId = ?");
+    $deleteQuery->execute([$placeId]);
+
+    // Reload the page to reflect the deletion
+    header("Location: add_suggest_form.php?guideId=" . $guideId);
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -25,9 +73,10 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manage Places</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
 </head>
 <body>
-
+<?php include '../base_nav.php'; ?>
 <div class="container mt-5">
   <h1 class="mb-4">Add Place</h1>
   <form method="POST" enctype="multipart/form-data">
@@ -55,7 +104,7 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
         <?php endforeach; ?>
       </select>
     </div>
-    <button type="submit" class="btn btn-primary" name="addSuggest">Add Place</button>
+    <button type="submit" class="btn btn-primary" name="addSuggest">اضف مكان سياحي </button>
   </form>
 
   <h1 class="mt-5">All Places</h1>
@@ -63,11 +112,12 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Description</th>
-          <th>City</th> <!-- New column for City -->
-          
+          <th>الرقم</th>
+          <th>الاسم </th>
+          <th>الوصف</th>
+          <th>المدينة</th>
+          <th> هل تم اعتمادها ؟</th>
+          <th>حذف</th>
         </tr>
       </thead>
       <tbody>
@@ -76,14 +126,21 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
             <td><?= htmlspecialchars($place['placeId']) ?></td>
             <td><?= htmlspecialchars($place['name']) ?></td>
             <td><?= htmlspecialchars($place['description']) ?></td>
-            <td><?= htmlspecialchars($place['cityName'] ?? 'N/A') ?></td> <!-- Display city name -->
-            
+            <td><?= htmlspecialchars($place['cityName'] ?? 'N/A') ?></td>
+            <td><?= ($place['Approve'] == 1) ? 'نعم' : 'لا' ?></td>
+
+            <td>
+              <form method="POST" style="display: inline;">
+                <input type="hidden" name="placeId" value="<?= htmlspecialchars($place['placeId']) ?>">
+                <button type="submit" name="deletePlace" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this place?');">حذف</button>
+              </form>
+            </td>
           </tr>
         <?php endforeach; ?>
       </tbody>
-</table>
+    </table>
   <?php else: ?>
-    <p class="alert alert-info">No places found.</p>
+    <p class="alert alert-info">لاتوجد لديك اماكن مقترحة </p>
   <?php endif; ?>
 </div>
 

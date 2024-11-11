@@ -16,7 +16,7 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
         FROM Place p
         LEFT JOIN Cities c ON p.CityId = c.CityId 
         WHERE c.Name LIKE :city 
-        AND (p.PlaceId NOT IN (SELECT s.placeId FROM suggestedplaces s) OR p.Approve = 1)"; 
+        AND (p.PlaceId NOT IN (SELECT s.placeId FROM suggestedplaces s) AND p.Approve = 1)"; 
     
     $params[':city'] = '%' . $city . '%'; // Wildcard search for the city name
     
@@ -36,7 +36,7 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
             FROM Place p
             LEFT JOIN Cities c ON p.CityId = c.CityId
             WHERE p.PlaceId NOT IN (SELECT s.placeId FROM suggestedplaces s) 
-        OR p.Approve = 1";
+        AND p.Approve = 1";
     
     // Prepare and execute the query without filtering by city
     $stmt = $pdo->prepare($sql);
@@ -46,21 +46,21 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
 ?>
 <!-- Display City Image and Name if exists and a city was searched -->
 <?php if (!empty($cityImage)): ?>
-            <div class="row g-4 justify-content-center mb-4">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="package-item">
-                        <div class="overflow-hidden">
-                        <img class="img-fluid" src="/trips/<?php echo $cityImage; ?>" alt="City Image">
-                        </div>
-                        <div class="d-flex border-bottom">
-                            <small class="flex-fill text-center border-end py-2">
-                                <i class="fa fa-map-marker-alt text-primary me-2"></i><?php echo $cityName; ?>
-                            </small>
-                        </div>
-                    </div>
+    <div class="row g-4 justify-content-center mb-4">
+        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="package-item">
+                <div class="overflow-hidden">
+                <img class="img-fluid" src="/trips/<?php echo $cityImage; ?>" alt="City Image">
+                </div>
+                <div class="d-flex border-bottom">
+                    <small class="flex-fill text-center border-end py-2">
+                        <i class="fa fa-map-marker-alt text-primary me-2"></i><?php echo $cityName; ?>
+                    </small>
                 </div>
             </div>
-        <?php endif; ?>
+        </div>
+    </div>
+<?php endif; ?>
 <!-- Package Start -->
 <div class="container-xxl py-5">
     <div class="container">
@@ -80,31 +80,29 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
             </form>
         </div>
 
-        
-
         <div class="row g-4 justify-content-center">
-    <?php foreach ($places as $place): ?>
-        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-            <div class="package-item">
-                <a href="/trips/pages/placeDetails.php?placeId=<?php echo htmlspecialchars($place['placeId']); ?>" style="text-decoration: none; color: inherit;">
-                    <div class="overflow-hidden">
-                        <!-- عرض صورة المكان باستخدام المسار المخزن في قاعدة البيانات -->
-                        <img class="img-fluid" src="/trips/<?php echo htmlspecialchars($place['placeImage']); ?>" alt="Place Image">
-                    </div>
-                    <div class="d-flex border-bottom">
-                        <small class="flex-fill text-center border-end py-2">
-                            <i class="fa fa-map-marker-alt text-primary me-2"></i><?php echo htmlspecialchars($place['cityName']); ?>
-                        </small>
-                    </div>
-                    <div class="text-center p-4">
-                        <h3 class="mb-0"><?php echo htmlspecialchars($place['name']); ?></h3>
-                        <p><?php echo htmlspecialchars($place['description']); ?></p>
-                    </div>
-                </a>
+
+        <?php foreach ($places as $place): ?>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="package-item">
+                    <a href="/trips/pages/placeDetails.php?placeId=<?php echo htmlspecialchars($place['placeId']); ?>" style="text-decoration: none; color: inherit;">
+                        <div class="overflow-hidden">
+                            <img class="img-fluid"  style="width: 100%;"src="/trips/<?php echo htmlspecialchars($place['placeImage']); ?>" alt="Place Image">
+                        </div>
+                        <div class="d-flex border-bottom">
+                            <small class="flex-fill text-center border-end py-2">
+                                <i class="fa fa-map-marker-alt text-primary me-2"></i><?php echo htmlspecialchars($place['cityName']); ?>
+                            </small>
+                        </div>
+                        <div class="text-center p-4">
+                            <h3 class="mb-0"><?php echo htmlspecialchars($place['name']); ?></h3>
+                            <p><?php echo htmlspecialchars($place['description']); ?></p>
+                        </div>
+                    </a>
+                </div>
             </div>
+        <?php endforeach; ?>
         </div>
-    <?php endforeach; ?>
-</div>
 
     </div>
 </div>
@@ -113,4 +111,3 @@ if (isset($_GET['city']) && !empty(trim($_GET['city']))) {
 <?php
 // Close the database connection
 $pdo = null;
-?>
