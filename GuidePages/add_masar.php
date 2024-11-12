@@ -13,6 +13,8 @@ if (!isset($_GET['userId'])) {
 
 // جلب userId من الرابط
 $userId = $_GET['userId'];
+$guideId= $_GET['guideId'];
+
 
 // جلب الدول من قاعدة البيانات
 $countriesQuery = $pdo->query("SELECT * FROM countries");
@@ -38,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $placeId = $_POST['place'];
 
     // إدخال البيانات مع userId في قاعدة البيانات
-    $insertQuery = $pdo->prepare("INSERT INTO custom_tours (user_id, start_date, end_date, people_count, category, notes, country_id, city_id, place_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $insertQuery->execute([$userId, $startDate, $endDate, $peopleCount, $category, $notes, $countryId, $cityId, $placeId]);
+    $insertQuery = $pdo->prepare("INSERT INTO custom_tours (user_id, start_date, end_date, people_count, category, notes, country_id, city_id, place_id,guideid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
+    $insertQuery->execute([$userId, $startDate, $endDate, $peopleCount, $category, $notes, $countryId, $cityId, $placeId,$guideId]);
 
     $message = 'تم إرسال طلب مسار خاص بنجاح';
 }

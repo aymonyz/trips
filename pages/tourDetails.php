@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -26,7 +26,7 @@ $tourStmt = $pdo->prepare("
 ");
 $tourStmt->execute(['tourId' => $tourId]);
 $tour = $tourStmt->fetch(PDO::FETCH_ASSOC);
-
+$guideId = $tour['guideId'];
 if (!$tour) {
     echo "لم يتم العثور على الجولة.";
     exit();
@@ -62,6 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_comment'])) {
 $commentsStmt = $pdo->prepare("SELECT tour_comments.*, user.name AS userName FROM tour_comments JOIN user ON tour_comments.userId = user.userId WHERE tourId = ? ORDER BY created_at DESC");
 $commentsStmt->execute([$tourId]);
 $comments = $commentsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$ratingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM review WHERE guideId = ?");
+$ratingStmt->execute([$guideId]);
+$rating = $ratingStmt->fetchColumn();
+$starRating = $rating ? round($rating) : 0;
 ?>
 
 <!DOCTYPE html>
@@ -110,9 +115,11 @@ $comments = $commentsStmt->fetchAll(PDO::FETCH_ASSOC);
                     <h5><?php echo htmlspecialchars($tour['guideName']); ?></h5>
                     <div class="mb-2">
                         <span>التقييم:</span>
-                        <span class="text-warning"><?php echo str_repeat('★', (int)$tour['guideRating']); ?><?php echo str_repeat('☆', 5 - (int)$tour['guideRating']); ?></span>
+                        <!-- <span class="text-warning"><?php echo str_repeat('★', (int)$tour['rating']); ?><?php echo str_repeat('☆', 5 - (int)$tour['guideRating']); ?></span> -->
                     </div>
-                    <p>تقييم <?php echo htmlspecialchars($tour['guideRating']); ?>/5</p>
+                    <p>تقييم  <h5 class="mb-4"> <?php
+                        echo str_repeat('⭐', $starRating); 
+                        ?>/5</p>
                 </div>
 
                 <!-- Tour Map and Key Highlights -->

@@ -15,7 +15,7 @@ if (isset($_SESSION['userId'])) {
 
 <?php
 // Start the session
-session_start();
+
 include '../db.php'; // Include database connection
 
 // Check if guideId is provided in the URL
@@ -304,7 +304,7 @@ $reviews = $reviewsQuery->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
                 </div>
-                <a href="add_masar.php?userId=<?php echo $userId; ?>" class="btn custom-masar-btn">طلب مسار خاص</a>
+                <a href="add_masar.php?userId=<?php echo $userId; ?>&guideId=<?php echo $_GET['guideId']; ?>"  class="btn custom-masar-btn">طلب مسار خاص</a>
 
 <style>
     /* تنسيقات الزر المخصص */

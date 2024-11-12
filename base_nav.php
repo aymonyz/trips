@@ -118,6 +118,7 @@ if ($page == 'home') {
         
         </div>
         <?php if (isset($_SESSION['userId'])): ?>
+<<<<<<< HEAD
             <?php if ($_SESSION['role'] == 'user'): ?>
                     <a href="../index.php?page=profile" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
                     <a href="../index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
@@ -127,6 +128,18 @@ if ($page == 'home') {
         <?php else: ?>
             <!-- Show Register if not logged in -->        <?php endif; ?>
     </div>
+=======
+    <!-- Show Profile and Logout if logged in -->
+    <?php if ($_SESSION['role'] == 'user'): ?>
+        <a href="../index.php?page=profile" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
+        <a href="../index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
+    <?php elseif ($_SESSION['role'] == 'guide'): ?>
+        <a href="dashboard-button.php" class="btn btn-primary rounded-pill py-2 px-4">الملف الشخصي</a>
+        <a href="../index.php?page=logout" class="btn btn-secondary rounded-pill py-2 px-4 ms-2">تسجيل خروج</a>
+    <?php endif; ?>
+<?php endif; ?>
+
+>>>>>>> 7018f743231e2200caa2daaf23d49de95c297c74
 </nav>
 
 
