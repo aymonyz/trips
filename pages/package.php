@@ -6,6 +6,7 @@ include 'db.php';
 $searchCity = isset($_GET['city']) ? $_GET['city'] : '';
 $searchDate = isset($_GET['date']) ? $_GET['date'] : '';
 $searchTourName = isset($_GET['tourName']) ? $_GET['tourName'] : '';
+$selectedCategory = isset($_GET['category']) ? $_GET['category'] : '';
 
 // SQL query to fetch tours with guide name
 $sql = "SELECT Tour.*, TourGuide.name AS guideName FROM Tour 
@@ -32,6 +33,12 @@ if (!empty($searchTourName)) {
     $params[':tourName'] = '%' . $searchTourName . '%';
 }
 
+// إذا تم اختيار تصنيف، أضفه كشرط
+if (!empty($selectedCategory)) {
+    $conditions[] = "Tour.placeCategory = :placeCategory";
+    $params[':placeCategory'] = $selectedCategory;
+}
+
 // إضافة الشروط إلى الاستعلام إذا كانت هناك أي شروط
 if (!empty($conditions)) {
     $sql .= " WHERE " . implode(" AND ", $conditions);
@@ -51,10 +58,26 @@ $tourCount = count($tours);
 // جلب قائمة المدن من قاعدة البيانات
 $citiesQuery = $pdo->query("SELECT CityId, Name FROM Cities ORDER BY Name ASC");
 $cities = $citiesQuery->fetchAll(PDO::FETCH_ASSOC);
+
+// جلب قائمة التصنيفات من قاعدة البيانات
+$categoriesQuery = $pdo->query("SELECT DISTINCT placeCategory FROM Tour ORDER BY placeCategory ASC");
+$categories = $categoriesQuery->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<!-- صندوق البحث -->
+<!-- أزرار التصنيفات -->
 <div class="container mt-5">
+    <div class="text-center mb-4">
+        <h4>التصنيفات</h4>
+        <?php foreach ($categories as $category): ?>
+            <a href="index.php?page=packages&category=<?php echo urlencode($category['placeCategory']); ?>" class="btn btn-outline-primary m-2">
+                <?php echo htmlspecialchars($category['placeCategory']); ?>
+            </a>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<!-- صندوق البحث -->
+<div class="container mt-3">
     <form method="GET" action="index.php">
         <input type="hidden" name="page" value="packages">
         <div class="row mb-4">
@@ -122,6 +145,7 @@ define('BASE_URL', 'http://localhost/trips/uploads/'); // استبدل `localhos
                             <div class="text-center p-4">
                                 <h1><?php echo htmlspecialchars($row['title']); ?></h1>
                                 <h3 class="mb-0">﷼<?php echo number_format($row['price'], 2); ?></h3>
+                                <p><strong>التصنيف:</strong> <?php echo htmlspecialchars($row['placeCategory']); ?></p>
                                 <div class="mb-3">
                                     <small class="fa fa-star text-primary"></small>
                                     <small class="fa fa-star text-primary"></small>
