@@ -1,13 +1,13 @@
 <?php
-include '../db.php'; // Include your database connection
-session_start(); 
+include '../db.php';
+session_start();
 if (!isset($_SESSION['userId'])) {
   header("Location: ../index.php?=home");
   exit();
 }
 $role = 'guide';
 
-$guideId = $_GET['guideId']; // Ensure guideId is passed in the URL
+$guideId = $_GET['guideId'];
 
 // Fetch places for the specific guide
 $placeQuery = $pdo->prepare("
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addSuggest'])) {
     $imagePath = null;
     if (!empty($_FILES['placeImage']['name'])) {
         $imagePath = "../uploads/" . basename($_FILES['placeImage']['name']);
-        $path="uploads/". basename($_FILES['placeImage']['name']);
+        $path = "uploads/" . basename($_FILES['placeImage']['name']);
         if (!move_uploaded_file($_FILES['placeImage']['tmp_name'], $imagePath)) {
             echo "Failed to upload image!";
             exit();
@@ -56,7 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addSuggest'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletePlace'])) {
     $placeId = $_POST['placeId'];
 
-    // Delete place from the database
+    // Delete related entries in tour_places before deleting the place
+    $deleteRelatedQuery = $pdo->prepare("DELETE FROM tour_places WHERE placeId = ?");
+    $deleteRelatedQuery->execute([$placeId]);
+
+    // Delete the place from the database
     $deleteQuery = $pdo->prepare("DELETE FROM Place WHERE placeId = ?");
     $deleteQuery->execute([$placeId]);
 
@@ -67,36 +71,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletePlace'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage Places</title>
+  <title>إدارة الأماكن السياحية</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
 </head>
 <body>
 <?php include '../base_nav.php'; ?>
 <div class="container mt-5">
-  <h1 class="mb-4">Add Place</h1>
+  <h1 class="mb-4">إضافة مكان سياحي</h1>
   <form method="POST" enctype="multipart/form-data">
     <div class="mb-3">
-      <label for="placeName" class="form-label">Place Name</label>
+      <label for="placeName" class="form-label">اسم المكان</label>
       <input type="text" class="form-control" id="placeName" name="placeName" required>
     </div>
     <div class="mb-3">
-      <label for="placeDescription" class="form-label">Place Description</label>
+      <label for="placeDescription" class="form-label">وصف المكان</label>
       <textarea class="form-control" id="placeDescription" name="placeDescription" required></textarea>
     </div>
     <div class="mb-3">
-      <label for="placeImage" class="form-label">Place Image</label>
+      <label for="placeImage" class="form-label">صورة المكان</label>
       <input type="file" class="form-control" id="placeImage" name="placeImage" accept="image/*" required>
     </div>
 
     <div class="mb-3">
-      <label for="citySelect" class="form-label">City</label>
+      <label for="citySelect" class="form-label">المدينة</label>
       <select class="form-control" id="citySelect" name="cityId" required>
-        <option value="">Select City</option>
+        <option value="">اختر المدينة</option>
         <?php foreach ($cities as $city): ?>
           <option value="<?= htmlspecialchars($city['CityId']) ?>">
             <?= htmlspecialchars($city['Name']) ?>
@@ -104,19 +108,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletePlace'])) {
         <?php endforeach; ?>
       </select>
     </div>
-    <button type="submit" class="btn btn-primary" name="addSuggest">اضف مكان سياحي </button>
+    <button type="submit" class="btn btn-primary" name="addSuggest">إضافة المكان</button>
   </form>
 
-  <h1 class="mt-5">All Places</h1>
+  <h1 class="mt-5">جميع الأماكن</h1>
   <?php if (!empty($places)): ?>
     <table class="table table-bordered">
       <thead>
         <tr>
           <th>الرقم</th>
-          <th>الاسم </th>
+          <th>الاسم</th>
           <th>الوصف</th>
           <th>المدينة</th>
-          <th> هل تم اعتمادها ؟</th>
+          <th>هل تم اعتمادها؟</th>
           <th>حذف</th>
         </tr>
       </thead>
@@ -126,13 +130,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletePlace'])) {
             <td><?= htmlspecialchars($place['placeId']) ?></td>
             <td><?= htmlspecialchars($place['name']) ?></td>
             <td><?= htmlspecialchars($place['description']) ?></td>
-            <td><?= htmlspecialchars($place['cityName'] ?? 'N/A') ?></td>
+            <td><?= htmlspecialchars($place['cityName'] ?? 'غير متوفر') ?></td>
             <td><?= ($place['Approve'] == 1) ? 'نعم' : 'لا' ?></td>
-
             <td>
               <form method="POST" style="display: inline;">
                 <input type="hidden" name="placeId" value="<?= htmlspecialchars($place['placeId']) ?>">
-                <button type="submit" name="deletePlace" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this place?');">حذف</button>
+                <button type="submit" name="deletePlace" class="btn btn-danger" onclick="return confirm('هل أنت متأكد أنك تريد حذف هذا المكان؟');">حذف</button>
               </form>
             </td>
           </tr>
@@ -140,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletePlace'])) {
       </tbody>
     </table>
   <?php else: ?>
-    <p class="alert alert-info">لاتوجد لديك اماكن مقترحة </p>
+    <p class="alert alert-info">لاتوجد أماكن مقترحة حاليًا</p>
   <?php endif; ?>
 </div>
 
