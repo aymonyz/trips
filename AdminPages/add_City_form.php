@@ -31,6 +31,7 @@ if (isset($_GET['removeCity'])) {
         $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
 
         echo "<div class='alert alert-success'>تم حذف المدينة بنجاح.</div>";
+       
     } catch (PDOException $e) {
         echo "<div class='alert alert-danger'>حدث خطأ أثناء حذف المدينة: " . htmlspecialchars($e->getMessage()) . "</div>";
     }
@@ -56,6 +57,7 @@ if (isset($_POST['addCity'])) {
             $stmt = $pdo->prepare("INSERT INTO cities (Name, ImageURL) VALUES (:name, :imagePath)");
             $stmt->execute(['name' => $name, 'imagePath' => $path]);
             echo "<div class='alert alert-success'>تم رفع الصورة بنجاح.</div>";
+            header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         } else {
             echo "<div class='alert alert-danger'>حدث خطأ أثناء نقل الصورة إلى مجلد 'uploads'.</div>";

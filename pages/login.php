@@ -31,14 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // توجيه المستخدم بناءً على الدور
             if ($user['role'] === 'admin') {
-                header("Location: AdminPages/index.php");
+                header("Location: index.php");
                 exit();
             } elseif ($user['role'] === 'guide') {
                 if ($user['active'] == 1) {
                     header("Location: GuidePages/dashboard-button.php");
                     exit();
                 } else {
+                    
                     $error = "حسابك غير مفعل.";
+                    session_destroy();
+                    
                 }
             } else {
                 header("Location: index.php?page=home");

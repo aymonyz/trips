@@ -64,7 +64,7 @@ if (isset($_POST['addPlace'])) {
         }
 
         try {
-            $stmt = $pdo->prepare("INSERT INTO place (name, description, imageURL, CityId, Approve) VALUES (:name, :description, :imageURL, :cityId, 0)");
+            $stmt = $pdo->prepare("INSERT INTO place (name, description, imageURL, CityId, Approve) VALUES (:name, :description, :imageURL, :cityId, 1)");
             $stmt->execute([
                 'name' => $placeName,
                 'description' => $placeDescription,
