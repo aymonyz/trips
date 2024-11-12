@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
         $stmt = $pdo->prepare("INSERT INTO user (name, emailAddress, password, role,active) VALUES (?, ?, ?, 'user','1')");
         if ($stmt->execute([$name, $email, $password])) {
-            echo "Registration successful!";
+            echo "تم التسجيل بنجاح!";
         } else {
             echo "Error occurred during registration.";
         }
