@@ -1,5 +1,7 @@
 <?php
-session_start();
+
+
+
 // Get the current page from the URL, default to 'home'
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
@@ -110,7 +112,7 @@ if ($page == 'home') {
             <a href="../index.php?page=team" class="nav-item nav-link <?= $page == 'team' ? 'active' : '' ?>" style="color: white;">المرشدين </a>
             <a href="../index.php?page=contact" class="nav-item nav-link <?= $page == 'contact' ? 'active' : '' ?>"style="color: white;">تواصل معانا </a>
             <?php if ($role == 'admin'): ?>
-                    <a href="admin.php" class="nav-item nav-link" style="color: white;">المدير</a>
+                    <a href="../AdminPages/index.php" class="nav-item nav-link" style="color: white;">المدير</a>
                 <?php endif; ?>
                 <?php if ($role == 'guide'): ?>
                     <a href="add_suggest_form.php?guideId=<?= $id ?>" class="nav-item nav-link" style="color: white;">اقتراح مكان </a>

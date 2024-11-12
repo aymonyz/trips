@@ -11,7 +11,7 @@ $guideId = $_GET['guideId'];
 
 // Fetch places for the specific guide
 $placeQuery = $pdo->prepare("
-    SELECT p.placeId, p.name, p.description, c.Name AS cityName ,p.Approve
+    SELECT p.placeId, p.name, p.description, c.Name AS cityName ,p.Approve,category
     FROM Place p
     LEFT JOIN Cities c ON p.CityId = c.CityId
     WHERE p.guideId = ?
@@ -44,9 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addSuggest'])) {
     // Insert new place into the database
     $insertPlace = $pdo->prepare("
         INSERT INTO Place (guideId, name, description, CityId, imageURL,category) 
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?,?)
     ");
-    $insertPlace->execute([$guideId, $placeName, $placeDescription, $cityId, $path]);
+    $insertPlace->execute([$guideId, $placeName, $placeDescription, $cityId, $path,$category]);
 
     // Reload the page to reflect the new place in the table
     header("Location: add_suggest_form.php?guideId=" . $guideId);
@@ -90,9 +90,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletePlace'])) {
       <input type="text" class="form-control" id="placeName" name="placeName" required>
     </div>
     <div class="mb-3">
-      <label for="placeName" class="form-label">التنصيف </label>
-      <input type="text" class="form-control" id="placeName" name="category	" required>
-    </div>
+  <label for="placeCategory" class="form-label">تصنيف المكان</label>
+  <select class="form-control" id="placeCategory" name="category" required>
+    <option value="">اختر التصنيف</option>
+    <option value="تاريخي">تاريخي</option>
+    <option value="طبيعي">طبيعي</option>
+    <option value="ترفيهي">ترفيهي</option>
+    <option value="ثقافي">ثقافي</option>
+  </select>
+</div>
     <div class="mb-3">
       <label for="placeDescription" class="form-label">وصف المكان</label>
       <textarea class="form-control" id="placeDescription" name="placeDescription" required></textarea>
@@ -125,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletePlace'])) {
           <th>الاسم</th>
           <th>الوصف</th>
           <th>المدينة</th>
+          <th>التنصيف</th>
           <th>هل تم اعتمادها؟</th>
           <th>حذف</th>
         </tr>
@@ -136,6 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletePlace'])) {
             <td><?= htmlspecialchars($place['name']) ?></td>
             <td><?= htmlspecialchars($place['description']) ?></td>
             <td><?= htmlspecialchars($place['cityName'] ?? 'غير متوفر') ?></td>
+            <td><?= htmlspecialchars($place['category']) ?></td>
             <td><?= ($place['Approve'] == 1) ? 'نعم' : 'لا' ?></td>
             <td>
               <form method="POST" style="display: inline;">
