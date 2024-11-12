@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addSuggest'])) {
     $placeName = $_POST['placeName'];
     $placeDescription = $_POST['placeDescription'];
     $cityId = $_POST['cityId'];
+    $category= $_POST['category'];
 
     // Image upload handling
     $imagePath = null;
@@ -42,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addSuggest'])) {
 
     // Insert new place into the database
     $insertPlace = $pdo->prepare("
-        INSERT INTO Place (guideId, name, description, CityId, imageURL) 
+        INSERT INTO Place (guideId, name, description, CityId, imageURL,category) 
         VALUES (?, ?, ?, ?, ?)
     ");
     $insertPlace->execute([$guideId, $placeName, $placeDescription, $cityId, $path]);
@@ -87,6 +88,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deletePlace'])) {
     <div class="mb-3">
       <label for="placeName" class="form-label">اسم المكان</label>
       <input type="text" class="form-control" id="placeName" name="placeName" required>
+    </div>
+    <div class="mb-3">
+      <label for="placeName" class="form-label">التنصيف </label>
+      <input type="text" class="form-control" id="placeName" name="category	" required>
     </div>
     <div class="mb-3">
       <label for="placeDescription" class="form-label">وصف المكان</label>
