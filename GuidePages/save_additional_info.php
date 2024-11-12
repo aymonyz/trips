@@ -52,7 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $query->execute([$userId, $name, $license_number, $languages, $cities, $countries, $about, $facebook, $twitter, $instagram, $imageURL, $experience, $phone]);
 
         echo "تم حفظ البيانات بنجاح!";
+
         // إعادة توجيه المستخدم إلى صفحة النجاح أو الرئيسية بعد حفظ البيانات
+        session_destroy();
         header("Location: ../index.php?page=login");
         exit();
     } catch (PDOException $e) {
