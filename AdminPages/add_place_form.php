@@ -4,7 +4,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 include '../db.php'; // تضمين الاتصال بقاعدة البيانات
-include'index.php';
 
 // التحقق من وجود طلب حذف
 if (isset($_GET['removePlace'])) {
@@ -40,52 +39,55 @@ if (isset($_GET['approvePlace'])) {
     header("Location: index.php?form=AddPlace");
     exit();
 }
-
-// التحقق من وجود طلب إضافة مكان
 if (isset($_POST['addPlace'])) {
-    $placeName = $_POST['placeName'];
-    $placeDescription = $_POST['placeDescription'];
-    $cityId = $_POST['cityId'];
-    $imagePaths = [];
+  $placeName = $_POST['placeName'];
+  $placeDescription = $_POST['placeDescription'];
+  $cityId = $_POST['cityId'];
+  $placeCategory = $_POST['placeCategory']; // إضافة التصنيف
+  $imagePaths = [];
 
-    // التحقق من تحميل الصور
-    if (!empty($_FILES['placeImages']['name'][0])) {
-        foreach ($_FILES['placeImages']['tmp_name'] as $index => $tmpName) {
-            $imageName = basename($_FILES['placeImages']['name'][$index]);
-            $path = 'uploads/'.$imageName;
-            $imagePath = '../uploads/' . $imageName;
+  if (!empty($_FILES['placeImages']['name'][0])) {
+      foreach ($_FILES['placeImages']['tmp_name'] as $index => $tmpName) {
+          $imageName = basename($_FILES['placeImages']['name'][$index]);
+          $path = 'uploads/'.$imageName;
+          $imagePath = '../uploads/' . $imageName;
 
-            // نقل الملف إلى مجلد التحميلات
-            if (move_uploaded_file($tmpName, $imagePath)) {
-                $imagePaths[] = $imagePath;
-            } else {
-                echo "<div class='alert alert-danger'>حدث خطأ أثناء تحميل الصورة رقم " . ($index + 1) . ".</div>";
-            }
-        }
+          if (move_uploaded_file($tmpName, $imagePath)) {
+              $imagePaths[] = $imagePath;
+          } else {
+              echo "<div class='alert alert-danger'>حدث خطأ أثناء تحميل الصورة رقم " . ($index + 1) . ".</div>";
+          }
+      }
 
-        try {
-            $stmt = $pdo->prepare("INSERT INTO place (name, description, imageURL, CityId, Approve) VALUES (:name, :description, :imageURL, :cityId, 1)");
-            $stmt->execute([
-                'name' => $placeName,
-                'description' => $placeDescription,
-                'imageURL' => $path,
-                'cityId' => $cityId
-            ]);
-            echo "<div class='alert alert-success'>تمت إضافة المكان بنجاح.</div>";
-        } catch (PDOException $e) {
-            echo "<div class='alert alert-danger'>حدث خطأ أثناء إضافة المكان: " . htmlspecialchars($e->getMessage()) . "</div>";
-        }
-    } else {
-        echo "<div class='alert alert-warning'>يرجى تحميل صورة واحدة على الأقل للمكان.</div>";
-    }
+      try {
+        $stmt = $pdo->prepare("INSERT INTO place (name, description, imageURL, CityId, Approve, category, guideid) VALUES (:name, :description, :imageURL, :cityId, 1, :category, 0)");
+        $stmt->execute([
+            'name' => $placeName,
+            'description' => $placeDescription,
+            'imageURL' => $path,
+            'cityId' => $cityId,
+            'category' => $placeCategory,
+            // تأكد من وجود قيمة افتراضية أو قيمة مدخلة لهذا الحقل
+        ]);
+        
+          echo "<div class='alert alert-success'>تمت إضافة المكان بنجاح.</div>";
+      } catch (PDOException $e) {
+          echo "<div class='alert alert-danger'>حدث خطأ أثناء إضافة المكان: " . htmlspecialchars($e->getMessage()) . "</div>";
+      }
+  } else {
+      echo "<div class='alert alert-warning'>يرجى تحميل صورة واحدة على الأقل للمكان.</div>";
+  }
 }
+
 
 // استرجاع جميع الأماكن مع أسماء المدن المرتبطة بها
 $placeQuery = $pdo->query("
-    SELECT p.placeId, p.name, p.description, c.Name AS cityName, Approve
+    SELECT p.placeId, p.name, p.description, c.Name AS cityName, p.Approve, p.category, g.name AS guideName
     FROM Place p
     LEFT JOIN Cities c ON p.CityId = c.CityId
+    LEFT JOIN TourGuide g ON p.guideid = g.guideId
 ");
+
 $places = $placeQuery->fetchAll(PDO::FETCH_ASSOC);
 
 // استرجاع جميع المدن للاختيار في القائمة المنسدلة
@@ -115,6 +117,17 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
       <textarea class="form-control" id="placeDescription" name="placeDescription" required></textarea>
     </div>
     <div class="mb-3">
+  <label for="placeCategory" class="form-label">تصنيف المكان</label>
+  <select class="form-control" id="placeCategory" name="placeCategory" required>
+    <option value="">اختر التصنيف</option>
+    <option value="تاريخي">تاريخي</option>
+    <option value="طبيعي">طبيعي</option>
+    <option value="ترفيهي">ترفيهي</option>
+    <option value="ثقافي">ثقافي</option>
+  </select>
+</div>
+
+    <div class="mb-3">
       <label for="placeImages" class="form-label">صور المكان</label>
       <input type="file" class="form-control" id="placeImages" name="placeImages[]" accept="image/*" multiple required>
     </div>
@@ -140,6 +153,7 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
           <th>المعرف</th>
           <th>الاسم</th>
           <th>الوصف</th>
+          <th>التصنيف</th>
           <th>المدينة</th>
           <th>هل تم اعتمادها؟</th>
           <th>إجراءات</th>
@@ -151,6 +165,8 @@ $cities = $cityQuery->fetchAll(PDO::FETCH_ASSOC);
             <td><?= htmlspecialchars($place['placeId']) ?></td>
             <td><?= htmlspecialchars($place['name']) ?></td>
             <td><?= htmlspecialchars($place['description']) ?></td>
+            <td><?= htmlspecialchars($place['category'] ?? 'غير محدد') ?></td>
+
             <td><?= htmlspecialchars($place['cityName'] ?? 'N/A') ?></td>
             <td><?= ($place['Approve'] == 1) ? 'نعم' : 'لا' ?></td>
             <td>

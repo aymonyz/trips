@@ -81,6 +81,7 @@ if ($data['status'] === 'OK' && !empty($data['candidates'])) {
     <!-- تضمين خرائط جوجل -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeDzl0MOiEQpnwthVENf7xDdyF5rXyRio&libraries=places&callback=initMap" async defer></script>
     <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
     <?php include '../base_nav.php'; ?>
    <style>
         body {

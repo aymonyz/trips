@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 // Get the current page from the URL, default to 'home'
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
